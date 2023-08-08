@@ -1,11 +1,10 @@
-import { Button, DatePicker, Form, Space, TimePicker, message } from 'antd';
+import { DatePicker, Form, Space, TimePicker, message } from 'antd';
 import dayjs, { Dayjs } from 'dayjs';
 import { useCallback, useContext } from 'react';
 import SubmitButton from './shared/SubmitButton';
 import { useWatch } from 'rc-field-form';
 import RaceState from '../constants/RaceState';
 import RaceContext from '../store/RaceContext';
-import { BackwardOutlined } from '@ant-design/icons';
 
 const { Item, useForm } = Form;
 
