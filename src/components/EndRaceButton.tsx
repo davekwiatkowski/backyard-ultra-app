@@ -1,13 +1,11 @@
 import { Button, Popconfirm, message } from 'antd';
 import { useCallback, useContext, useMemo } from 'react';
-import dayjs from 'dayjs';
 import RaceContext from '../store/RaceContext';
 import { useNavigate } from 'react-router';
 import RaceState from '../constants/RaceState';
 
 const EndRaceButton = () => {
-  const { setRaceState, setStartTime, raceState, setElapsedMs } =
-    useContext(RaceContext);
+  const { setRaceState, raceState, setElapsedMs } = useContext(RaceContext);
   const navigate = useNavigate();
 
   const isDisabled = useMemo(() => {
@@ -18,11 +16,10 @@ const EndRaceButton = () => {
 
   const handleEndRace = useCallback(() => {
     setRaceState(RaceState.Landing);
-    setStartTime(dayjs().add(999999999));
     setElapsedMs(0);
     message.success('Ended race.');
     navigate('/race');
-  }, [navigate, setElapsedMs, setRaceState, setStartTime]);
+  }, [navigate, setElapsedMs, setRaceState]);
 
   return (
     <Popconfirm

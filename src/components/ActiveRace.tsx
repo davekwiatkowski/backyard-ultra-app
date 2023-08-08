@@ -21,10 +21,13 @@ const ActiveRace = () => {
   }, [setElapsedMs, startTime]);
 
   const displayRemainingTime = useMemo(() => {
-    const displayMinutes = (60 - (Math.ceil(elapsedTimeInfo.minutes) % 60))
+    const displayMinutes = (
+      (60 - (Math.ceil(elapsedTimeInfo.minutes) % 60)) %
+      60
+    )
       .toString()
       .padStart(2, '0');
-    const displaySeconds = (60 - ((elapsedTimeInfo.seconds | 0) % 60))
+    const displaySeconds = ((60 - ((elapsedTimeInfo.seconds | 0) % 60)) % 60)
       .toString()
       .padStart(2, '0');
     return `${displayMinutes}:${displaySeconds}`;
