@@ -57,7 +57,7 @@ const RaceConfig = () => {
             },
           },
         ]}>
-        <DatePicker />
+        <DatePicker inputReadOnly />
       </Item>
       <Item
         label='Start time'
@@ -75,7 +75,12 @@ const RaceConfig = () => {
             },
           },
         ]}>
-        <TimePicker format='h:mm:ss a' use12Hours showNow={false} />
+        <TimePicker
+          inputReadOnly
+          format='h:mm:ss a'
+          use12Hours
+          showNow={false}
+        />
       </Item>
       <Item>
         <Space>
