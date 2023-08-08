@@ -21,16 +21,15 @@ const ActiveRace = () => {
   }, [setElapsedMs, startTime]);
 
   const displayRemainingTime = useMemo(() => {
-    const displayMinutes = (
-      (60 - (Math.ceil(elapsedTimeInfo.minutes) % 60)) %
-      60
-    )
+    let displayMinutes = (60 - (Math.ceil(elapsedTimeInfo.minutes) % 60)) % 60;
+    let displaySeconds = (60 - ((elapsedTimeInfo.seconds | 0) % 60)) % 61;
+    if (displaySeconds === 60) {
+      displaySeconds = 0;
+      displayMinutes += 1;
+    }
+    return `${displayMinutes.toString().padStart(2, '0')}:${displaySeconds
       .toString()
-      .padStart(2, '0');
-    const displaySeconds = ((60 - ((elapsedTimeInfo.seconds | 0) % 60)) % 60)
-      .toString()
-      .padStart(2, '0');
-    return `${displayMinutes}:${displaySeconds}`;
+      .padStart(2, '0')}`;
   }, [elapsedTimeInfo.minutes, elapsedTimeInfo.seconds]);
 
   const displayElapsedTime = useMemo(() => {
@@ -66,7 +65,7 @@ const ActiveRace = () => {
         percent={((elapsedTimeInfo.minutes / 60) * 100) % 100}></Progress>
       <Divider />
       <Space direction='vertical' align='center'>
-        <Text>Remaining time</Text>
+        <Text>Remaining time in yard</Text>
         <Progress
           type='circle'
           percent={100 - (((elapsedMs / 1000 / 60 / 60) * 100) % 100)}
