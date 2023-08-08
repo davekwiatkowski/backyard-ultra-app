@@ -4,22 +4,28 @@ import { Content, Footer } from 'antd/es/layout/layout';
 import dayjs from 'dayjs';
 import { useContext } from 'react';
 import RaceContext from '../store/RaceContext';
+import RaceState from '../constants/RaceState';
 
 const { Text, Title } = Typography;
 
 const SettingsPage = () => {
-  const { startTime } = useContext(RaceContext);
+  const { startTime, raceState } = useContext(RaceContext);
 
   return (
     <Layout style={{ height: '100%' }}>
       <Content>
-        <Title level={2}>Info</Title>
-        <Title level={5}>Race start time</Title>
-        <Text type='secondary'>
-          {new Date(startTime.valueOf()).toLocaleString()}
-        </Text>
-        <Divider />
-        <EndRaceButton />
+        {(raceState === RaceState.Started ||
+          raceState === RaceState.Initialized) && (
+          <>
+            <Title level={2}>Info</Title>
+            <Title level={5}>Race start time</Title>
+            <Text type='secondary'>
+              {new Date(startTime.valueOf()).toLocaleString()}
+            </Text>
+            <Divider />
+            <EndRaceButton />
+          </>
+        )}
       </Content>
       <Footer>
         <Text type='secondary'>"Stroller" © {dayjs().year().toString()}</Text>
