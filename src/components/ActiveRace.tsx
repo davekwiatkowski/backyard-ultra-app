@@ -3,6 +3,7 @@ import { useContext, useEffect, useMemo } from 'react';
 import dayjs from 'dayjs';
 import { msToTime } from '../util/timeUtil';
 import RaceContext from '../store/RaceContext';
+import Whistle from './Whistle';
 
 const { Text } = Typography;
 
@@ -21,6 +22,10 @@ const ActiveRace = () => {
   }, [setElapsedMs, startTime]);
 
   const displayRemainingTime = useMemo(() => {
+    if (elapsedMs < 0) {
+      return '';
+    }
+
     let displayMinutes = (60 - (Math.ceil(elapsedTimeInfo.minutes) % 60)) % 60;
     let displaySeconds = (60 - ((elapsedTimeInfo.seconds | 0) % 60)) % 61;
     if (displaySeconds === 60) {
@@ -59,21 +64,27 @@ const ActiveRace = () => {
         <Text style={{ fontFamily: 'monospace' }}>{displayElapsedTime}</Text>
       </Space>
       <Divider />
-      <Text>Yard progress</Text>
+      <Text type='secondary'>Yard progress</Text>
       <Progress
         showInfo={false}
         percent={((elapsedTimeInfo.minutes / 60) * 100) % 100}></Progress>
       <Divider />
       <Space direction='vertical' align='center'>
-        <Text>Remaining time in yard</Text>
+        <Text type='secondary'>Remaining time in yard</Text>
         <Progress
-          type='circle'
-          percent={100 - (((elapsedMs / 1000 / 60 / 60) * 100) % 100)}
+          type='dashboard'
+          percent={
+            elapsedMs < 0
+              ? 0
+              : 100 - (((elapsedMs / 1000 / 60 / 60) * 100) % 100)
+          }
           format={() => (
-            <Text style={{ fontFamily: 'monospace', fontSize: '1.25rem' }}>
+            <Text style={{ fontFamily: 'monospace', fontSize: '1.5rem' }}>
               {displayRemainingTime}
             </Text>
-          )}></Progress>
+          )}
+        />
+        <Whistle />
       </Space>
     </div>
   );

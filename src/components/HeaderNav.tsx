@@ -25,7 +25,6 @@ const HeaderNav: FC = () => {
   const handleClick = useCallback(
     (e: any) => {
       setCurrent(e.key);
-      console.log(e.key);
       navigate('/' + e.key);
     },
     [navigate]
