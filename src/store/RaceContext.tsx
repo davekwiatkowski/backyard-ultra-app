@@ -12,7 +12,7 @@ interface IRaceContext {
 }
 
 const defaultRaceContext: IRaceContext = {
-  startTime: dayjs().add(999999999),
+  startTime: dayjs(),
   setStartTime: () => {},
   raceState: RaceState.Landing,
   setRaceState: () => {},
@@ -31,12 +31,15 @@ export const RaceContextProvider: FC<{ children?: ReactNode }> = ({
 
   useEffect(() => {
     const interval = setInterval(() => {
-      if (startTime.valueOf() <= dayjs().valueOf()) {
+      if (
+        raceState === RaceState.Initialized &&
+        startTime.valueOf() <= dayjs().valueOf()
+      ) {
         setRaceState(RaceState.Started);
       }
     }, 1000);
     return () => clearInterval(interval);
-  }, [startTime]);
+  }, [raceState, startTime]);
 
   return (
     <RaceContext.Provider

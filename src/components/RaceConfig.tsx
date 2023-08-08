@@ -9,7 +9,7 @@ import RaceContext from '../store/RaceContext';
 const { Item, useForm } = Form;
 
 const RaceConfig = () => {
-  const { setStartTime, setRaceState } = useContext(RaceContext);
+  const { setStartTime, setRaceState, startTime } = useContext(RaceContext);
   const [form] = useForm<{ date: Dayjs; time: Dayjs }>();
   const date = useWatch('date', form);
 
@@ -43,6 +43,7 @@ const RaceConfig = () => {
   return (
     <Form form={form} onFinish={handleFinish}>
       <Item
+        initialValue={startTime}
         label='Start date'
         name='date'
         rules={[
@@ -60,6 +61,7 @@ const RaceConfig = () => {
         <DatePicker inputReadOnly />
       </Item>
       <Item
+        initialValue={startTime}
         label='Start time'
         name='time'
         rules={[
