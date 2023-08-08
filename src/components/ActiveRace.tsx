@@ -35,7 +35,7 @@ const ActiveRace = () => {
     return `${displayMinutes.toString().padStart(2, '0')}:${displaySeconds
       .toString()
       .padStart(2, '0')}`;
-  }, [elapsedTimeInfo.minutes, elapsedTimeInfo.seconds]);
+  }, [elapsedMs, elapsedTimeInfo.minutes, elapsedTimeInfo.seconds]);
 
   const displayElapsedTime = useMemo(() => {
     const displayHours = elapsedTimeInfo.hours | 0;
