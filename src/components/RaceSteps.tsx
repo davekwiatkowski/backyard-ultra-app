@@ -10,7 +10,7 @@ const RaceSteps = () => {
   useEffect(() => {
     if (raceState === RaceState.Configuring) {
       setCurrent(0);
-    } else if (raceState === RaceState.Initialized) {
+    } else if (raceState === RaceState.Waiting) {
       setCurrent(1);
     }
   }, [raceState]);

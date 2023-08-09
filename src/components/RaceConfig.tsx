@@ -1,4 +1,4 @@
-import { DatePicker, Form, Space, TimePicker, message } from 'antd';
+import { DatePicker, Form, Space, TimePicker, Typography, message } from 'antd';
 import dayjs, { Dayjs } from 'dayjs';
 import { useCallback, useContext } from 'react';
 import SubmitButton from './shared/SubmitButton';
@@ -7,6 +7,7 @@ import RaceState from '../constants/RaceState';
 import RaceContext from '../store/RaceContext';
 
 const { Item, useForm } = Form;
+const { Text, Title } = Typography;
 
 const RaceConfig = () => {
   const { setStartTime, setRaceState, startTime } = useContext(RaceContext);
@@ -33,7 +34,7 @@ const RaceConfig = () => {
       const dateTime = getDateTime(values.time);
       if (dateTime) {
         setStartTime(dateTime);
-        setRaceState(RaceState.Initialized);
+        setRaceState(RaceState.Waiting);
         message.success('Race initialized.');
       }
     },
@@ -42,6 +43,14 @@ const RaceConfig = () => {
 
   return (
     <Form form={form} onFinish={handleFinish}>
+      <div>
+        <Title level={2}>Race setup</Title>
+        <Text>
+          To continue a previous race, apply a previous date or time. To start a
+          new race, set a date or time in the future.
+        </Text>
+      </div>
+      <br />
       <Item
         initialValue={startTime}
         label='Start date'

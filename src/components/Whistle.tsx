@@ -2,10 +2,10 @@ import { SoundOutlined } from '@ant-design/icons';
 import { Button, message } from 'antd';
 import { useCallback, useContext, useEffect, useState } from 'react';
 import useSound from 'use-sound';
-import whistle1Sound from '../sounds/whistle1.m4a';
-import whistle2Sound from '../sounds/whistle2.m4a';
-import whistle3Sound from '../sounds/whistle3.m4a';
-import cowbellSound from '../sounds/cowbell.m4a';
+import whistle1Sound from '../resources/sounds/whistle1.m4a';
+import whistle2Sound from '../resources/sounds/whistle2.m4a';
+import whistle3Sound from '../resources/sounds/whistle3.m4a';
+import cowbellSound from '../resources/sounds/cowbell.m4a';
 import RaceContext from '../store/RaceContext';
 
 const Whistle = () => {
@@ -34,12 +34,16 @@ const Whistle = () => {
     if (isWhistleEnabled) {
       if (remainingMinutes === 3) {
         playWhistle3();
+        console.debug('playing 3 whistles');
       } else if (remainingMinutes === 2) {
         playWhistle2();
+        console.debug('playing 2 whistles');
       } else if (remainingMinutes === 1) {
         playWhistle1();
+        console.debug('playing 1 whistle');
       } else if (remainingMinutes === 60) {
         playCowbell();
+        console.debug('playing cowbell');
       }
     }
     if (

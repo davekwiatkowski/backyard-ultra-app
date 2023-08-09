@@ -10,7 +10,7 @@ const RaceSetupBackButton = () => {
   const handleClick = useCallback(() => {
     if (raceState === RaceState.Configuring) {
       setRaceState(RaceState.Landing);
-    } else if (raceState === RaceState.Initialized) {
+    } else if (raceState === RaceState.Waiting) {
       setRaceState(RaceState.Configuring);
     }
   }, [raceState, setRaceState]);

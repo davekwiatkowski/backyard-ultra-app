@@ -1,7 +1,9 @@
-import { Button } from 'antd';
+import { Button, Space, Typography } from 'antd';
 import { useCallback, useContext } from 'react';
 import RaceContext from '../store/RaceContext';
 import RaceState from '../constants/RaceState';
+
+const { Text } = Typography;
 
 const RaceLanding = () => {
   const { setRaceState } = useContext(RaceContext);
@@ -17,10 +19,14 @@ const RaceLanding = () => {
         justifyContent: 'center',
         alignItems: 'center',
         height: '100%',
+        flexDirection: 'column',
       }}>
-      <Button onClick={handleStartRace} type='primary'>
-        Start the race
-      </Button>
+      <Space direction='vertical' align='center'>
+        <Text>No race is active. Do you want to setup the race?</Text>
+        <Button onClick={handleStartRace} type='primary' shape='round'>
+          Setup
+        </Button>
+      </Space>
     </div>
   );
 };

@@ -1,32 +1,12 @@
-import { Space, Spin, Typography } from 'antd';
-import { useContext, useEffect, useState } from 'react';
-import dayjs from 'dayjs';
-import { msToTime } from '../util/timeUtil';
+import { Space, Statistic, Typography } from 'antd';
+import { useContext } from 'react';
 import RaceContext from '../store/RaceContext';
 
-const { Text } = Typography;
+const { Text, Title } = Typography;
+const { Countdown } = Statistic;
 
 const RaceCountdown = () => {
   const { startTime } = useContext(RaceContext);
-  const [timeRemaining, setTimeRemaining] = useState({
-    hours: 0,
-    minutes: 0,
-    seconds: 0,
-  });
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const { hours, minutes, seconds } = msToTime(
-        startTime.valueOf() - dayjs().valueOf()
-      );
-      setTimeRemaining({
-        hours: hours % 60 | 0,
-        minutes: minutes % 60 | 0,
-        seconds: seconds % 60 | 0,
-      });
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [setTimeRemaining, startTime]);
 
   return (
     <div
@@ -37,16 +17,21 @@ const RaceCountdown = () => {
         justifyContent: 'center',
         height: '100%',
       }}>
-      <Space direction='vertical' align='center'>
-        <Spin size='large'></Spin>
-        <Text>
-          Race start: {new Date(startTime.toString()).toLocaleDateString()} at{' '}
-          {new Date(startTime.toString()).toLocaleTimeString()}
-        </Text>
-        <Text>
-          Race starts in {timeRemaining.hours} hours, {timeRemaining.minutes}{' '}
-          minutes, {timeRemaining.seconds} seconds{' '}
-        </Text>
+      <Space direction='vertical'>
+        <Title level={2}>Wait for the race to begin</Title>
+        <Space>
+          <Text type='secondary'>Race start:</Text>
+          <Text>
+            {new Date(startTime.toString()).toLocaleDateString()} at{' '}
+            {new Date(startTime.toString()).toLocaleTimeString()}
+          </Text>
+        </Space>
+        <Countdown
+          valueStyle={{ fontFamily: 'monospace' }}
+          title='Time remaining for race to start'
+          value={startTime.valueOf()}
+          format='H:mm:ss'
+        />
       </Space>
     </div>
   );

@@ -1,78 +1,63 @@
-import { Divider, Progress, Space, Spin, Typography } from 'antd';
-import { useContext, useEffect, useMemo } from 'react';
+import { Divider, Progress, Space, Statistic, Typography } from 'antd';
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import dayjs from 'dayjs';
 import { msToTime } from '../util/timeUtil';
 import RaceContext from '../store/RaceContext';
 import Whistle from './Whistle';
+import { valueType } from 'antd/es/statistic/utils';
+import CountUp from 'react-countup';
 
 const { Text } = Typography;
+const { Countdown } = Statistic;
+
+const statisticFormatter = (value: number) => (
+  <CountUp end={value} separator=',' />
+);
 
 const ActiveRace = () => {
   const { startTime, elapsedMs, setElapsedMs } = useContext(RaceContext);
+  const [remainingTime, setRemainingTime] = useState(0);
 
   const elapsedTimeInfo = useMemo(() => {
     return msToTime(elapsedMs);
   }, [elapsedMs]);
 
+  const handleCountdownChange = useCallback((value?: valueType) => {
+    if (typeof value === 'number') {
+      setRemainingTime(value);
+    }
+  }, []);
+
   useEffect(() => {
     const interval = setInterval(() => {
-      setElapsedMs(dayjs().valueOf() - startTime.valueOf());
+      const milliseconds = dayjs().valueOf() - startTime.valueOf();
+      setElapsedMs(milliseconds);
     }, 1000);
     return () => clearInterval(interval);
   }, [setElapsedMs, startTime]);
-
-  const displayRemainingTime = useMemo(() => {
-    if (elapsedMs < 0) {
-      return '';
-    }
-
-    let displayMinutes = (60 - (Math.ceil(elapsedTimeInfo.minutes) % 60)) % 60;
-    let displaySeconds = (60 - ((elapsedTimeInfo.seconds | 0) % 60)) % 61;
-    if (displaySeconds === 60) {
-      displaySeconds = 0;
-      displayMinutes += 1;
-    }
-    return `${displayMinutes.toString().padStart(2, '0')}:${displaySeconds
-      .toString()
-      .padStart(2, '0')}`;
-  }, [elapsedMs, elapsedTimeInfo.minutes, elapsedTimeInfo.seconds]);
-
-  const displayElapsedTime = useMemo(() => {
-    if (elapsedMs < 0) {
-      return '';
-    }
-
-    const displayHours = elapsedTimeInfo.hours | 0;
-    const displayMinutes = (elapsedTimeInfo.minutes % 60 | 0)
-      .toString()
-      .padStart(2, '0');
-    const displaySeconds = (elapsedTimeInfo.seconds % 60 | 0)
-      .toString()
-      .padStart(2, '0');
-    return `${displayHours}:${displayMinutes}:${displaySeconds}`;
-  }, [
-    elapsedMs,
-    elapsedTimeInfo.hours,
-    elapsedTimeInfo.minutes,
-    elapsedTimeInfo.seconds,
-  ]);
 
   return (
     <div
       style={{
         display: 'flex',
         justifyContent: 'center',
-        alignItems: 'center',
         flexDirection: 'column',
+        alignItems: 'center',
       }}>
-      <Text style={{ fontSize: '2rem' }}>
-        Yard {displayElapsedTime ? (elapsedTimeInfo.hours + 1) | 0 : <Spin />}
-      </Text>
-      <Space align='baseline'>
-        Elapsed time:
-        <Text style={{ fontFamily: 'monospace' }}>
-          {displayElapsedTime || <Spin />}
-        </Text>
+      <Space split={<Divider type='vertical' />}>
+        <Statistic
+          formatter={statisticFormatter as any}
+          title='Current yard'
+          value={(elapsedTimeInfo.hours + 1) | 0}
+        />
+        <Countdown
+          title={'Race time'}
+          valueStyle={{ fontFamily: 'monospace' }}
+          format='H:mm:ss'
+          value={
+            dayjs().valueOf() + dayjs().subtract(startTime.valueOf()).valueOf()
+          }
+        />
       </Space>
       <Divider />
       <Text type='secondary'>Yard progress</Text>
@@ -81,23 +66,23 @@ const ActiveRace = () => {
         percent={((elapsedTimeInfo.minutes / 60) * 100) % 100}></Progress>
       <Divider />
       <Space direction='vertical' align='center'>
-        <Text type='secondary'>Remaining time in yard</Text>
+        <Text type='secondary'>Remaining yard time</Text>
         <Progress
           type='dashboard'
-          percent={
-            elapsedMs < 0
-              ? 0
-              : 100 - (((elapsedMs / 1000 / 60 / 60) * 100) % 100)
-          }
-          format={() =>
-            displayRemainingTime ? (
-              <Text style={{ fontFamily: 'monospace', fontSize: '1.5rem' }}>
-                {displayRemainingTime}
-              </Text>
-            ) : (
-              <Spin />
-            )
-          }
+          percent={(remainingTime / (1000 * 60 * 60)) * 100}
+          format={() => (
+            <Countdown
+              valueStyle={{ fontFamily: 'monospace' }}
+              format='mm:ss'
+              onChange={handleCountdownChange}
+              value={
+                dayjs().valueOf() +
+                1000 * 60 * 60 -
+                (dayjs().subtract(startTime.valueOf()).valueOf() %
+                  (1000 * 60 * 60))
+              }
+            />
+          )}
         />
         <Whistle />
       </Space>

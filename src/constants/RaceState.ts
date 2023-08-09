@@ -1,8 +1,8 @@
 enum RaceState {
   Landing = 'Landing',
   Configuring = 'Configuring',
-  Initialized = 'Initialized',
-  Started = 'Started',
+  Waiting = 'Waiting',
+  Active = 'Active',
 }
 
 export default RaceState;

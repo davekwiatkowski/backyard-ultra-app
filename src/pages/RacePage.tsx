@@ -17,15 +17,15 @@ const RacePage = () => {
     <Layout style={{ height: '100%' }}>
       <Content style={{ height: '100%' }}>
         {(raceState === RaceState.Configuring ||
-          raceState === RaceState.Initialized) && <RaceSteps />}
+          raceState === RaceState.Waiting) && <RaceSteps />}
         {raceState === RaceState.Landing && <RaceLanding />}
         {raceState === RaceState.Configuring && <RaceConfig />}
-        {raceState === RaceState.Initialized && <RaceCountdown />}
-        {raceState === RaceState.Started && <ActiveRace />}
+        {raceState === RaceState.Waiting && <RaceCountdown />}
+        {raceState === RaceState.Active && <ActiveRace />}
       </Content>
       <Footer>
         {(raceState === RaceState.Configuring ||
-          raceState === RaceState.Initialized) && <RaceSetupBackButton />}
+          raceState === RaceState.Waiting) && <RaceSetupBackButton />}
       </Footer>
     </Layout>
   );

@@ -13,7 +13,7 @@ const SettingsPage = () => {
   return (
     <Layout style={{ height: '100%' }}>
       <Content>
-        {(raceState === RaceState.Started ||
+        {(raceState === RaceState.Active ||
           raceState === RaceState.Configuring) && (
           <>
             <Title level={3}>Info</Title>

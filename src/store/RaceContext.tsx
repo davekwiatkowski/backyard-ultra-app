@@ -1,5 +1,12 @@
 import dayjs, { Dayjs } from 'dayjs';
-import { FC, ReactNode, createContext, useEffect, useState } from 'react';
+import {
+  FC,
+  ReactNode,
+  createContext,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
 import RaceState from '../constants/RaceState';
 
 interface IRaceContext {
@@ -14,7 +21,8 @@ interface IRaceContext {
 const defaultRaceContext: IRaceContext = {
   startTime: dayjs(),
   setStartTime: () => {},
-  raceState: RaceState.Landing,
+  raceState:
+    (localStorage.getItem('raceState') as RaceState) || RaceState.Landing,
   setRaceState: () => {},
   elapsedMs: -999999,
   setElapsedMs: () => {},
@@ -29,25 +37,46 @@ export const RaceContextProvider: FC<{ children?: ReactNode }> = ({
   const [raceState, setRaceState] = useState(defaultRaceContext.raceState);
   const [elapsedMs, setElapsedMs] = useState(defaultRaceContext.elapsedMs);
 
+  const handleStartTimeChange = useCallback((startTime: Dayjs) => {
+    setStartTime(startTime);
+    localStorage.setItem('startTime', startTime.toString());
+  }, []);
+
+  const handleRaceStateChange = useCallback((raceState: RaceState) => {
+    setRaceState(raceState);
+    localStorage.setItem('raceState', raceState);
+  }, []);
+
+  useEffect(() => {
+    const cachedStartTime = localStorage.getItem('startTime');
+    if (cachedStartTime) {
+      setStartTime(dayjs(cachedStartTime));
+    }
+    const cachedRaceState = localStorage.getItem('raceState');
+    if (cachedRaceState) {
+      setRaceState(cachedRaceState as RaceState);
+    }
+  }, []);
+
   useEffect(() => {
     const interval = setInterval(() => {
       if (
-        raceState === RaceState.Initialized &&
+        raceState === RaceState.Waiting &&
         startTime.valueOf() <= dayjs().valueOf()
       ) {
-        setRaceState(RaceState.Started);
+        handleRaceStateChange(RaceState.Active);
       }
     }, 1000);
     return () => clearInterval(interval);
-  }, [raceState, startTime]);
+  }, [handleRaceStateChange, raceState, startTime]);
 
   return (
     <RaceContext.Provider
       value={{
         startTime,
-        setStartTime,
+        setStartTime: handleStartTimeChange,
         raceState,
-        setRaceState,
+        setRaceState: handleRaceStateChange,
         elapsedMs,
         setElapsedMs,
       }}>
