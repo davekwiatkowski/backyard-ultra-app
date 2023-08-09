@@ -19,9 +19,7 @@ const Whistle = () => {
 
   const handleClick = useCallback(() => {
     message.info(
-      isWhistleEnabled
-        ? 'Disabled next alert sound'
-        : 'Enabled next alert sounds'
+      isWhistleEnabled ? 'Skipped next alert sound' : 'Enabled alert sounds'
     );
     setIsWhistleEnabled(!isWhistleEnabled);
   }, [isWhistleEnabled]);

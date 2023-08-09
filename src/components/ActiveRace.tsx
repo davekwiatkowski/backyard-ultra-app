@@ -1,4 +1,4 @@
-import { Divider, Progress, Space, Typography } from 'antd';
+import { Divider, Progress, Space, Spin, Typography } from 'antd';
 import { useContext, useEffect, useMemo } from 'react';
 import dayjs from 'dayjs';
 import { msToTime } from '../util/timeUtil';
@@ -38,6 +38,10 @@ const ActiveRace = () => {
   }, [elapsedMs, elapsedTimeInfo.minutes, elapsedTimeInfo.seconds]);
 
   const displayElapsedTime = useMemo(() => {
+    if (elapsedMs < 0) {
+      return '';
+    }
+
     const displayHours = elapsedTimeInfo.hours | 0;
     const displayMinutes = (elapsedTimeInfo.minutes % 60 | 0)
       .toString()
@@ -46,7 +50,12 @@ const ActiveRace = () => {
       .toString()
       .padStart(2, '0');
     return `${displayHours}:${displayMinutes}:${displaySeconds}`;
-  }, [elapsedTimeInfo.hours, elapsedTimeInfo.minutes, elapsedTimeInfo.seconds]);
+  }, [
+    elapsedMs,
+    elapsedTimeInfo.hours,
+    elapsedTimeInfo.minutes,
+    elapsedTimeInfo.seconds,
+  ]);
 
   return (
     <div
@@ -57,11 +66,13 @@ const ActiveRace = () => {
         flexDirection: 'column',
       }}>
       <Text style={{ fontSize: '2rem' }}>
-        Yard {(elapsedTimeInfo.hours + 1) | 0}
+        Yard {displayElapsedTime ? (elapsedTimeInfo.hours + 1) | 0 : <Spin />}
       </Text>
       <Space align='baseline'>
         Elapsed time:
-        <Text style={{ fontFamily: 'monospace' }}>{displayElapsedTime}</Text>
+        <Text style={{ fontFamily: 'monospace' }}>
+          {displayElapsedTime || <Spin />}
+        </Text>
       </Space>
       <Divider />
       <Text type='secondary'>Yard progress</Text>
@@ -78,11 +89,15 @@ const ActiveRace = () => {
               ? 0
               : 100 - (((elapsedMs / 1000 / 60 / 60) * 100) % 100)
           }
-          format={() => (
-            <Text style={{ fontFamily: 'monospace', fontSize: '1.5rem' }}>
-              {displayRemainingTime}
-            </Text>
-          )}
+          format={() =>
+            displayRemainingTime ? (
+              <Text style={{ fontFamily: 'monospace', fontSize: '1.5rem' }}>
+                {displayRemainingTime}
+              </Text>
+            ) : (
+              <Spin />
+            )
+          }
         />
         <Whistle />
       </Space>
