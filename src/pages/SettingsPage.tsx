@@ -1,7 +1,6 @@
-import { Divider, Layout, Typography } from 'antd';
+import { Divider, Layout, Space, Typography } from 'antd';
 import EndRaceButton from '../components/EndRaceButton';
-import { Content, Footer } from 'antd/es/layout/layout';
-import dayjs from 'dayjs';
+import { Content } from 'antd/es/layout/layout';
 import { useContext } from 'react';
 import RaceContext from '../store/RaceContext';
 import RaceState from '../constants/RaceState';
@@ -17,19 +16,18 @@ const SettingsPage = () => {
         {(raceState === RaceState.Started ||
           raceState === RaceState.Configuring) && (
           <>
-            <Title level={2}>Info</Title>
-            <Title level={5}>Race start time</Title>
-            <Text type='secondary'>
-              {new Date(startTime.valueOf()).toLocaleString()}
-            </Text>
+            <Title level={3}>Info</Title>
+            <Space align='baseline'>
+              <Text>Race start time:</Text>
+              <Text type='secondary'>
+                {new Date(startTime.valueOf()).toLocaleString()}
+              </Text>
+            </Space>
             <Divider />
           </>
         )}
         <EndRaceButton />
       </Content>
-      <Footer>
-        <Text type='secondary'>"Stroller" © {dayjs().year().toString()}</Text>
-      </Footer>
     </Layout>
   );
 };

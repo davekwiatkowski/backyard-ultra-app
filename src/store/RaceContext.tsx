@@ -16,7 +16,7 @@ const defaultRaceContext: IRaceContext = {
   setStartTime: () => {},
   raceState: RaceState.Landing,
   setRaceState: () => {},
-  elapsedMs: -99999,
+  elapsedMs: -999999,
   setElapsedMs: () => {},
 };
 

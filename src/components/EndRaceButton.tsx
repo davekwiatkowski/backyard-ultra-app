@@ -16,7 +16,7 @@ const EndRaceButton = () => {
 
   const handleEndRace = useCallback(() => {
     setRaceState(RaceState.Landing);
-    setElapsedMs(0);
+    setElapsedMs(-999999);
     message.success('Ended race.');
     navigate('/race');
   }, [navigate, setElapsedMs, setRaceState]);
