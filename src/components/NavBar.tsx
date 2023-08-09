@@ -17,7 +17,7 @@ const menuItems: MenuProps['items'] = [
   },
 ];
 
-const HeaderNav: FC = () => {
+const NavBar: FC = () => {
   const location = useLocation();
   const [current, setCurrent] = useState(location.pathname.substring(1));
   const navigate = useNavigate();
@@ -47,4 +47,4 @@ const HeaderNav: FC = () => {
   );
 };
 
-export default HeaderNav;
+export default NavBar;

@@ -17,6 +17,7 @@
     "antd": "^5.8.2",
     "react": "^18.2.0",
     "react-countup": "^6.4.2",
+    "react-device-detect": "^2.2.3",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.14.2",
     "use-elapsed-time": "^3.0.4",
