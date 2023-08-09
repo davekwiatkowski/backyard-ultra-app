@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router';
 import RaceState from '../constants/RaceState';
 
 const EndRaceButton = () => {
-  const { setRaceState, raceState, setElapsedMs } = useContext(RaceContext);
+  const { setRaceState, raceState } = useContext(RaceContext);
   const navigate = useNavigate();
 
   const isDisabled = useMemo(() => {
@@ -16,10 +16,9 @@ const EndRaceButton = () => {
 
   const handleEndRace = useCallback(() => {
     setRaceState(RaceState.Landing);
-    setElapsedMs(-999999);
     message.success('Ended race.');
     navigate('/race');
-  }, [navigate, setElapsedMs, setRaceState]);
+  }, [navigate, setRaceState]);
 
   return (
     <Popconfirm

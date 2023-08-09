@@ -4,8 +4,11 @@ import HeaderNav from './components/HeaderNav';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import RacePage from './pages/RacePage';
 import SettingsPage from './pages/SettingsPage';
+import useAlertSounds from './util/useAlertSounds';
 
 function App() {
+  useAlertSounds();
+
   return (
     <Layout style={{ height: '100vh' }}>
       <HeaderNav />

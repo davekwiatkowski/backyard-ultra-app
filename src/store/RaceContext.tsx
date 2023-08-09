@@ -8,6 +8,7 @@ import {
   useState,
 } from 'react';
 import RaceState from '../constants/RaceState';
+import { useElapsedTime } from 'use-elapsed-time';
 
 interface IRaceContext {
   startTime: Dayjs;
@@ -15,7 +16,8 @@ interface IRaceContext {
   raceState: RaceState;
   setRaceState: (value: RaceState) => void;
   elapsedMs: number;
-  setElapsedMs: (value: number) => void;
+  shouldPlayNextAlert: boolean;
+  setShouldPlayNextAlert: (value: boolean) => void;
 }
 
 const defaultRaceContext: IRaceContext = {
@@ -25,7 +27,8 @@ const defaultRaceContext: IRaceContext = {
     (localStorage.getItem('raceState') as RaceState) || RaceState.Landing,
   setRaceState: () => {},
   elapsedMs: -999999,
-  setElapsedMs: () => {},
+  shouldPlayNextAlert: true,
+  setShouldPlayNextAlert: () => {},
 };
 
 const RaceContext = createContext<IRaceContext>(defaultRaceContext);
@@ -36,6 +39,11 @@ export const RaceContextProvider: FC<{ children?: ReactNode }> = ({
   const [startTime, setStartTime] = useState(defaultRaceContext.startTime);
   const [raceState, setRaceState] = useState(defaultRaceContext.raceState);
   const [elapsedMs, setElapsedMs] = useState(defaultRaceContext.elapsedMs);
+  const [shouldPlayNextAlert, setShouldPlayNextAlert] = useState(true);
+  const { elapsedTime, reset } = useElapsedTime({
+    isPlaying: true,
+    updateInterval: 1,
+  });
 
   const handleStartTimeChange = useCallback((startTime: Dayjs) => {
     setStartTime(startTime);
@@ -59,6 +67,14 @@ export const RaceContextProvider: FC<{ children?: ReactNode }> = ({
   }, []);
 
   useEffect(() => {
+    reset((dayjs().valueOf() - startTime.valueOf()) / 1000);
+  }, [reset, startTime]);
+
+  useEffect(() => {
+    setElapsedMs(elapsedTime * 1000);
+  }, [elapsedTime]);
+
+  useEffect(() => {
     const interval = setInterval(() => {
       if (
         raceState === RaceState.Waiting &&
@@ -78,7 +94,8 @@ export const RaceContextProvider: FC<{ children?: ReactNode }> = ({
         raceState,
         setRaceState: handleRaceStateChange,
         elapsedMs,
-        setElapsedMs,
+        shouldPlayNextAlert,
+        setShouldPlayNextAlert,
       }}>
       {children}
     </RaceContext.Provider>

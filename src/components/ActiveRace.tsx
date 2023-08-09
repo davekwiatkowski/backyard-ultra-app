@@ -1,5 +1,5 @@
 import { Divider, Progress, Space, Statistic, Typography } from 'antd';
-import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { useCallback, useContext, useMemo, useState } from 'react';
 import dayjs from 'dayjs';
 import { msToTime } from '../util/timeUtil';
 import RaceContext from '../store/RaceContext';
@@ -15,7 +15,7 @@ const statisticFormatter = (value: number) => (
 );
 
 const ActiveRace = () => {
-  const { startTime, elapsedMs, setElapsedMs } = useContext(RaceContext);
+  const { startTime, elapsedMs } = useContext(RaceContext);
   const [remainingTime, setRemainingTime] = useState(0);
 
   const elapsedTimeInfo = useMemo(() => {
@@ -27,14 +27,6 @@ const ActiveRace = () => {
       setRemainingTime(value);
     }
   }, []);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const milliseconds = dayjs().valueOf() - startTime.valueOf();
-      setElapsedMs(milliseconds);
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [setElapsedMs, startTime]);
 
   return (
     <div
