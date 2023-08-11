@@ -3,14 +3,14 @@ import { Content } from 'antd/es/layout/layout';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import RacePage from './pages/RacePage';
 import SettingsPage from './pages/SettingsPage';
-import useAlertSounds from './util/useAlertSounds';
+import useAutomatedAlerts from './util/useAutomatedAlerts';
 import NavBar from './components/NavBar';
 
 function App() {
-  useAlertSounds();
+  useAutomatedAlerts();
 
   return (
-    <Layout style={{ height: '100vh' }}>
+    <Layout style={{ minHeight: '100vh' }}>
       <NavBar />
       <Content style={{ padding: '24px' }}>
         <Routes>
