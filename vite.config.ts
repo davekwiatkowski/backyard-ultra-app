@@ -15,7 +15,7 @@ export default defineConfig({
         name: 'Backyard Ultra App',
         short_name: 'BYU App',
         description: 'An app for backyard ultras',
-        theme_color: '#ffffff',
+        theme_color: '#91a0b8',
         icons: [
           {
             src: 'pwa-64x64.png',
