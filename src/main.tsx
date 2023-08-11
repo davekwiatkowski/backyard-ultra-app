@@ -4,15 +4,18 @@ import App from './App.tsx';
 import './index.css';
 import { RaceContextProvider } from './store/RaceContext.tsx';
 import { HashRouter } from 'react-router-dom';
+import { SettingsContextProvider } from './store/SettingsContext.tsx';
 
 const root = document.getElementById('root');
 if (root) {
   ReactDOM.createRoot(root).render(
     <React.StrictMode>
       <RaceContextProvider>
-        <HashRouter>
-          <App />
-        </HashRouter>
+        <SettingsContextProvider>
+          <HashRouter>
+            <App />
+          </HashRouter>
+        </SettingsContextProvider>
       </RaceContextProvider>
     </React.StrictMode>
   );

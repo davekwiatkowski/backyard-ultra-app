@@ -3,7 +3,7 @@ import { Button, message } from 'antd';
 import { useCallback, useContext } from 'react';
 import RaceContext from '../store/RaceContext';
 
-const Whistle = () => {
+const AlertButton = () => {
   const { shouldPlayNextAlert, setShouldPlayNextAlert } =
     useContext(RaceContext);
 
@@ -27,4 +27,4 @@ const Whistle = () => {
   );
 };
 
-export default Whistle;
+export default AlertButton;

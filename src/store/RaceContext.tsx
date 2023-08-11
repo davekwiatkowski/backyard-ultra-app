@@ -9,25 +9,27 @@ import {
 } from 'react';
 import RaceState from '../constants/RaceState';
 import { useElapsedTime } from 'use-elapsed-time';
+import StorageKeys from '../constants/StorageKeys';
 
 interface IRaceContext {
   startTime: Dayjs;
-  setStartTime: (value: Dayjs) => void;
   raceState: RaceState;
-  setRaceState: (value: RaceState) => void;
   elapsedMs: number;
   shouldPlayNextAlert: boolean;
+  setRaceState: (value: RaceState) => void;
+  setStartTime: (value: Dayjs) => void;
   setShouldPlayNextAlert: (value: boolean) => void;
 }
 
 const defaultRaceContext: IRaceContext = {
   startTime: dayjs(),
-  setStartTime: () => {},
   raceState:
-    (localStorage.getItem('raceState') as RaceState) || RaceState.Landing,
-  setRaceState: () => {},
+    (localStorage.getItem(StorageKeys.raceState) as RaceState) ||
+    RaceState.Landing,
   elapsedMs: -999999,
   shouldPlayNextAlert: true,
+  setRaceState: () => {},
+  setStartTime: () => {},
   setShouldPlayNextAlert: () => {},
 };
 
@@ -47,20 +49,20 @@ export const RaceContextProvider: FC<{ children?: ReactNode }> = ({
 
   const handleStartTimeChange = useCallback((startTime: Dayjs) => {
     setStartTime(startTime);
-    localStorage.setItem('startTime', startTime.toString());
+    localStorage.setItem(StorageKeys.startTime, startTime.toString());
   }, []);
 
   const handleRaceStateChange = useCallback((raceState: RaceState) => {
     setRaceState(raceState);
-    localStorage.setItem('raceState', raceState);
+    localStorage.setItem(StorageKeys.raceState, raceState);
   }, []);
 
   useEffect(() => {
-    const cachedStartTime = localStorage.getItem('startTime');
+    const cachedStartTime = localStorage.getItem(StorageKeys.startTime);
     if (cachedStartTime) {
       setStartTime(dayjs(cachedStartTime));
     }
-    const cachedRaceState = localStorage.getItem('raceState');
+    const cachedRaceState = localStorage.getItem(StorageKeys.raceState);
     if (cachedRaceState) {
       setRaceState(cachedRaceState as RaceState);
     }

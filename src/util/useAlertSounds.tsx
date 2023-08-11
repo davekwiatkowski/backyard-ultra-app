@@ -5,17 +5,19 @@ import whistle3Sound from '../resources/sounds/whistle3.m4a';
 import cowbellSound from '../resources/sounds/cowbell.m4a';
 import RaceContext from '../store/RaceContext';
 import { useContext, useEffect } from 'react';
+import SettingsContext from '../store/SettingsContext';
 
 const useAlertSounds = () => {
   const { elapsedMs, shouldPlayNextAlert, setShouldPlayNextAlert } =
     useContext(RaceContext);
+  const { isSoundEnabled } = useContext(SettingsContext);
   const [playWhistle1] = useSound(whistle1Sound);
   const [playWhistle2] = useSound(whistle2Sound);
   const [playWhistle3] = useSound(whistle3Sound);
   const [playCowbell] = useSound(cowbellSound);
 
   useEffect(() => {
-    if (elapsedMs < 0) {
+    if (elapsedMs < 0 || !isSoundEnabled) {
       return;
     }
 
@@ -46,6 +48,7 @@ const useAlertSounds = () => {
     }
   }, [
     elapsedMs,
+    isSoundEnabled,
     playCowbell,
     playWhistle1,
     playWhistle2,

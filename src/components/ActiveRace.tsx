@@ -3,9 +3,10 @@ import { useCallback, useContext, useMemo, useState } from 'react';
 import dayjs from 'dayjs';
 import { msToTime } from '../util/timeUtil';
 import RaceContext from '../store/RaceContext';
-import Whistle from './Whistle';
+import AlertButton from './AlertButton';
 import { valueType } from 'antd/es/statistic/utils';
 import CountUp from 'react-countup';
+import SettingsContext from '../store/SettingsContext';
 
 const { Text } = Typography;
 const { Countdown } = Statistic;
@@ -16,6 +17,7 @@ const statisticFormatter = (value: number) => (
 
 const ActiveRace = () => {
   const { startTime, elapsedMs } = useContext(RaceContext);
+  const { isSoundEnabled } = useContext(SettingsContext);
   const [remainingTime, setRemainingTime] = useState(0);
 
   const elapsedTimeInfo = useMemo(() => {
@@ -76,7 +78,7 @@ const ActiveRace = () => {
             />
           )}
         />
-        <Whistle />
+        {isSoundEnabled && <AlertButton />}
       </Space>
     </div>
   );
