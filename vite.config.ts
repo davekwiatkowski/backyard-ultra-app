@@ -13,7 +13,7 @@ export default defineConfig({
       },
       manifest: {
         name: 'Backyard Ultra App',
-        short_name: 'BYUApp',
+        short_name: 'BYU App',
         description: 'An app for backyard ultras',
         theme_color: '#ffffff',
         icons: [
