@@ -5,9 +5,11 @@ import RacePage from './pages/RacePage';
 import SettingsPage from './pages/SettingsPage';
 import useAutomatedAlerts from './util/useAutomatedAlerts';
 import NavBar from './components/NavBar';
+import useScreenWakeLock from './util/useScreenWakeLock';
 
 function App() {
   useAutomatedAlerts();
+  useScreenWakeLock();
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
