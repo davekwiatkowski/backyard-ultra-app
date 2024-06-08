@@ -35,7 +35,7 @@ runs:
       name: Cache Pipfile
       uses: actions/cache@v2
       with:
-        path: ~/.local/share/virtualenvs
+        path: ~/${{inputs.working-directory}}.local/share/virtualenvs
         key: ${{ runner.os }}-python-${{ steps.setup-python.outputs.python-version }}-pipenv-${{ hashFiles('Pipfile.lock') }}
 
     - id: sync-pipfile
