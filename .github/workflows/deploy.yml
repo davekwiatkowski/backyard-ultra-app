@@ -12,7 +12,6 @@ jobs:
         working-directory: ./data
     runs-on: ubuntu-latest
     steps:
-
       - name: checkout repo content
         uses: actions/checkout@v2 # checkout the repository content
 

@@ -1,4 +1,4 @@
-# backyard-ultra-stats
+# /data
 
 Creates ultra stats in a useful form for coding purposes
 
