@@ -5,12 +5,12 @@ on:
   push:
     branches: 'main'
 
-defaults:
-  run:
-    working-directory: ./app
-
 jobs:
   build_site:
+    defaults:
+      run:
+        working-directory: ./app
+        
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
