@@ -24,6 +24,11 @@ jobs:
       - name: execute py script
         run: pipenv run start
 
+      - uses: actions/upload-artifact@v3
+        with:
+          name: data
+          path: ./app/static/data/
+
   build_app:
     defaults:
       run:
@@ -33,6 +38,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: data
+          path: ./app/static/data/
 
       # If you're using pnpm, add this step then change the commands and cache key below to use `pnpm`
       # - name: Install pnpm
