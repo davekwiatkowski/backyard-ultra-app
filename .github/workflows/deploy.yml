@@ -20,6 +20,7 @@ jobs:
         uses: ./.github/actions/install-python-pipenv-pipfile
         with:
           python-version: 3.12.3
+          working-directory: ./data
 
       - name: execute py script
         run: pipenv run start
