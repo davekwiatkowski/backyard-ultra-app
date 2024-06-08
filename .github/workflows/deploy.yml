@@ -36,10 +36,11 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: main 
 
-  build_site:
+  build_app:
     defaults:
       run:
         working-directory: ./app
+    needs: update_data
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -77,7 +78,7 @@ jobs:
     defaults:
       run:
         working-directory: ./app
-    needs: build_site
+    needs: build_app
     runs-on: ubuntu-latest
 
     permissions:
