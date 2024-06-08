@@ -5,12 +5,41 @@ on:
   push:
     branches: 'main'
 
-defaults:
-  run:
-    working-directory: ./app
-
 jobs:
+  update_data:
+    defaults:
+      run:
+        working-directory: ./data
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repo content
+        uses: actions/checkout@v2 # checkout the repository content
+
+      - name: install python, pipenv, and pipfile packages
+        uses: palewire/install-python-pipenv-pipfile@v2
+        with:
+          python-version: 3.12.3
+
+      - name: execute py script
+        run: pipenv run start
+
+      - name: commit files
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add -A
+          git diff-index --quiet HEAD || (git commit -a -m "action: updated stats" --allow-empty)
+
+      - name: push changes
+        uses: ad-m/github-push-action@v0.6.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: main 
+
   build_site:
+    defaults:
+      run:
+        working-directory: ./app
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -45,6 +74,9 @@ jobs:
           path: 'app/build/'
 
   deploy:
+    defaults:
+      run:
+        working-directory: ./app
     needs: build_site
     runs-on: ubuntu-latest
 
