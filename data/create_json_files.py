@@ -1,3 +1,4 @@
+import os
 import pandas
 import json
 
@@ -6,6 +7,7 @@ from src.constants.project_constants import BUILD_FOLDER
 
 def transform(df):
     df = df[df['Yards'].notnull()]
+    df = df[df['Date'].notnull()]
     df = df.rename(columns={
         'Year': 'window', 
         'Rank': 'rank', 
@@ -40,6 +42,7 @@ def create_json_files():
     df = transform(df)
     out = df.to_json(orient="records")
     json_file_name = '../app/static/data/backyard-ultra-rankings.json'
+    os.makedirs(os.path.dirname(json_file_name), exist_ok=True)
     parsed = json.loads(out)
     with open(json_file_name, 'w') as json_file:
         json.dump(parsed, json_file, indent=2)
