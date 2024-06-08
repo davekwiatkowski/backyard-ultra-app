@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: cd into data directory
-        run: cd './data'
+        run: cd data
 
       - name: checkout repo content
         uses: actions/checkout@v2 # checkout the repository content
@@ -19,7 +19,6 @@ jobs:
         uses: palewire/install-python-pipenv-pipfile@v2
         with:
           python-version: 3.12.3
-
 
       - name: execute py script
         run: pipenv run start
