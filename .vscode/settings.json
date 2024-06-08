@@ -1,6 +1,7 @@
 {
     "files.exclude": {
         "**/node_modules": true,
-        "**/.svelte-kit": false
+        "**/.svelte-kit": false,
+        "**/build": true,
     }
 }
