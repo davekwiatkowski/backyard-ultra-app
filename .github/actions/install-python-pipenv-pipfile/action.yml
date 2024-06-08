@@ -8,7 +8,7 @@ inputs:
   working-directory:
     description: "The working directory"
     type: string
-    default: './'
+    default: ''
 
 runs:
   using: "composite"
