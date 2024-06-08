@@ -2,6 +2,12 @@ name: Deploy to GitHub Pages
 
 on:
   workflow_dispatch:
+    inputs:
+      data-directory:
+        description: 'Data directory'
+        required: true
+        default: './data'
+        type: string
   push:
     branches: 'main'
 
@@ -10,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: cd into data directory
-        run: cd data
+        run: cd ${{inputs.data-directory}}
 
       - name: checkout repo content
         uses: actions/checkout@v2 # checkout the repository content
