@@ -1,8 +1,9 @@
-/** @type {import('./$types').LayoutServerLoad} */
-export async function load({ fetch }) {
-    const res = await fetch('/data/backyard-ultra-rankings.json');
-    const backyardUltraRankings = await res.json();
-    return { backyardUltraRankings };
+import type { IRanking } from '../types/IRanking.js';
+import type { LayoutLoadEvent } from './$types.js';
+
+export async function load({ fetch }: LayoutLoadEvent) {
+    const dateWindowRankingsData: { [window: string]: IRanking[] } = await (await fetch('/data/date-window-rankings.json')).json();
+    return { dateWindowRankingsData };
 }
 
 export const prerender = true;
