@@ -6,5 +6,3 @@ export async function load({ fetch }: LayoutLoadEvent) {
     const dateWindowRankingsData: { [window: string]: IRanking[] } = await (await fetch('/data/date-window-rankings.json')).json();
     return { personRankingsData, dateWindowRankingsData };
 }
-
-export const prerender = true;
