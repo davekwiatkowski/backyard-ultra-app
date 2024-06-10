@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: deploy app to github pages
 
 on:
   workflow_dispatch:
@@ -14,8 +14,8 @@ jobs:
         working-directory: ./data
     runs-on: ubuntu-latest
     steps:
-      - name: checkout repo content
-        uses: actions/checkout@v2 # checkout the repository content
+      - name: checkout
+        uses: actions/checkout@v4
 
       - name: install python, pipenv, and pipfile packages
         uses: ./.github/actions/install-python-pipenv-pipfile
@@ -26,7 +26,7 @@ jobs:
       - name: execute py script
         run: pipenv run start
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: data
           path: ./app/static/data/
@@ -38,28 +38,22 @@ jobs:
     needs: update_data
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: checkout
         uses: actions/checkout@v4
 
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: data
           path: ./app/static/data/
 
-      # If you're using pnpm, add this step then change the commands and cache key below to use `pnpm`
-      # - name: Install pnpm
-      #   uses: pnpm/action-setup@v3
-      #   with:
-      #     version: 8
-
-      - name: Install Node.js
+      - name: install Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
           cache-dependency-path: '**/package-lock.json' # THIS PATTERN did the trick for me.
 
-      - name: Install dependencies
+      - name: install dependencies
         run: npm install
 
       - name: build
@@ -68,10 +62,9 @@ jobs:
         run: |
           npm run build
 
-      - name: Upload Artifacts
+      - name: upload Artifacts
         uses: actions/upload-pages-artifact@v3
         with:
-          # this should match the `pages` option in your adapter-static options
           path: 'app/build/'
 
   deploy:
@@ -90,6 +83,6 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
-      - name: Deploy
+      - name: deploy
         id: deployment
         uses: actions/deploy-pages@v4
