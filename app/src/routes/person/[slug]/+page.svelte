@@ -4,7 +4,7 @@
 
     export let data: PageData;
 
-    const currentPerson = data.personRankingsData[data.currentPersonId][0];
+    const currentPerson = data.personRankingsData[0];
 </script>
 
 <a href={`${base}/`}>Back</a>
@@ -15,7 +15,7 @@
 <hr />
 
 <ul>
-    {#each data.personRankingsData[data.currentPersonId] as item}
+    {#each data.personRankingsData as item}
         <li>
             <p>
                 {item.window}: Rank {item.rank}

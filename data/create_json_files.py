@@ -59,7 +59,7 @@ def create_json_files():
     csv_file_name = f'{BUILD_FOLDER}/{WORLD_RANKINGS_FILE_NAME}.csv'
     df = pandas.read_csv(csv_file_name)
     create_json_file(df, get_person_rankings, 'person-rankings')
-    create_json_file(df, get_window_rankings, 'date-window-rankings')
+    create_json_file(df, get_window_rankings, 'window-rankings')
 
 if __name__ == '__main__':
     create_json_files()
