@@ -2,6 +2,7 @@
     import { Render, Subscribe, createTable } from "svelte-headless-table";
     import {
         addPagination,
+        addSortBy,
         addTableFilter,
     } from "svelte-headless-table/plugins";
     import * as Table from "$lib/components/ui/table";
@@ -9,6 +10,11 @@
     import type { IRanking } from "../../../types/IRanking";
     import { Button } from "$lib/components/ui/button";
     import { Input } from "$lib/components/ui/input";
+    import {
+        ArrowDownNarrowWide,
+        ArrowUpDown,
+        ArrowUpWideNarrow,
+    } from "lucide-svelte";
 
     export let data: IRanking[];
 
@@ -18,6 +24,7 @@
             fn: ({ filterValue, value }) =>
                 value.toLowerCase().includes(filterValue.toLowerCase()),
         }),
+        sort: addSortBy(),
     });
     const columns = table.createColumns([
         table.column({
@@ -55,7 +62,7 @@
     <div class="flex items-center py-4">
         <Input
             class="max-w-sm"
-            placeholder="Search"
+            placeholder="Search for something..."
             type="text"
             bind:value={$filterValue}
         />
@@ -71,9 +78,30 @@
                                     attrs={cell.attrs()}
                                     let:attrs
                                     props={cell.props()}
+                                    let:props
                                 >
                                     <Table.Head {...attrs}>
-                                        <Render of={cell.render()} />
+                                        <Button
+                                            variant="ghost"
+                                            on:click={(event) => {
+                                                props.sort.toggle(event);
+                                            }}
+                                        >
+                                            <Render of={cell.render()} />
+                                            {#if !props.sort.order}
+                                                <ArrowUpDown
+                                                    class={"ml-2 h-4 w-4"}
+                                                />
+                                            {:else if props.sort.order === "asc"}
+                                                <ArrowDownNarrowWide
+                                                    class={"ml-2 h-4 w-4"}
+                                                />
+                                            {:else}
+                                                <ArrowUpWideNarrow
+                                                    class={"ml-2 h-4 w-4"}
+                                                />
+                                            {/if}
+                                        </Button>
                                     </Table.Head>
                                 </Subscribe>
                             {/each}
