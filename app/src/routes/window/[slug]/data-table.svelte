@@ -15,6 +15,7 @@
         ArrowUpDown,
         ArrowUpWideNarrow,
     } from "lucide-svelte";
+    import getFlagEmoji from "$lib/getFlagEmoji";
 
     export let data: IRanking[];
 
@@ -36,8 +37,26 @@
             header: "Name",
         }),
         table.column({
-            accessor: "nationality",
+            accessor: "natFull",
             header: "Nationality",
+            cell: ({ value }) => {
+                return value ?? "";
+            },
+        }),
+        table.column({
+            accessor: "nat2",
+            header: "Flag",
+            cell: ({ value }) => {
+                return getFlagEmoji(value);
+            },
+            plugins: {
+                sort: {
+                    disable: true,
+                },
+                filter: {
+                    exclude: true,
+                },
+            },
         }),
         table.column({
             accessor: "race",
@@ -81,27 +100,31 @@
                                     let:props
                                 >
                                     <Table.Head {...attrs}>
-                                        <Button
-                                            variant="ghost"
-                                            on:click={(event) => {
-                                                props.sort.toggle(event);
-                                            }}
-                                        >
+                                        {#if cell.id === "nat2"}
                                             <Render of={cell.render()} />
-                                            {#if !props.sort.order}
-                                                <ArrowUpDown
-                                                    class={"ml-2 h-4 w-4"}
-                                                />
-                                            {:else if props.sort.order === "asc"}
-                                                <ArrowDownNarrowWide
-                                                    class={"ml-2 h-4 w-4"}
-                                                />
-                                            {:else}
-                                                <ArrowUpWideNarrow
-                                                    class={"ml-2 h-4 w-4"}
-                                                />
-                                            {/if}
-                                        </Button>
+                                        {:else}
+                                            <Button
+                                                variant="ghost"
+                                                on:click={(event) => {
+                                                    props.sort.toggle(event);
+                                                }}
+                                            >
+                                                <Render of={cell.render()} />
+                                                {#if !props.sort.order}
+                                                    <ArrowUpDown
+                                                        class={"ml-2 h-4 w-4"}
+                                                    />
+                                                {:else if props.sort.order === "asc"}
+                                                    <ArrowDownNarrowWide
+                                                        class={"ml-2 h-4 w-4"}
+                                                    />
+                                                {:else}
+                                                    <ArrowUpWideNarrow
+                                                        class={"ml-2 h-4 w-4"}
+                                                    />
+                                                {/if}
+                                            </Button>
+                                        {/if}
                                     </Table.Head>
                                 </Subscribe>
                             {/each}

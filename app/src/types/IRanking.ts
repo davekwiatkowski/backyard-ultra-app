@@ -3,7 +3,9 @@ export interface IRanking {
     rank: number;
     yards: number;
     name: string;
-    nationality: string;
+    nat2: string;
+    nat3: string;
+    natFull: string;
     race: string;
     date: string;
     isRankTied: boolean;

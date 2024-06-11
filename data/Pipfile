@@ -7,6 +7,7 @@ name = "pypi"
 selenium = "*"
 pandas = "*"
 numpy = "*"
+country-converter = "*"
 
 [dev-packages]
 
