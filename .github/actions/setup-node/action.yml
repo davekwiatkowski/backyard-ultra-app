@@ -25,7 +25,7 @@ runs:
       uses: actions/cache@v4
       with:
         path: ./site/node_modules
-        key: node-modules-${{ hashFiles('package-lock.json') }}
+        key: node-modules-${{ hashFiles('**/package-lock.json') }}
 
     - name: Install dependencies 🔧
       shell: bash
