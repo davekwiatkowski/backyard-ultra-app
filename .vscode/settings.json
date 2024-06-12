@@ -1,7 +1,9 @@
 {
     "files.exclude": {
         "**/node_modules": true,
-        "**/.svelte-kit": true,
-        "**/build": false,
+        "**/out": true,
+        "**/next-env.d.ts": true,
+        "**/.next": true,
+        "**/build": true
     }
 }

@@ -63,7 +63,7 @@ def get_person_rankings(df):
     return out
 
 def create_json_file(df, callback, file_name):
-    json_file_name = f'../app/static/data/{file_name}.json'
+    json_file_name = f'../site/src/data/{file_name}.json'
     os.makedirs(os.path.dirname(json_file_name), exist_ok=True)
     out = callback(df)
     parsed = json.loads(out)
