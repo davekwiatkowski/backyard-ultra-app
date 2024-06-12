@@ -1,7 +1,7 @@
 {
     "files.exclude": {
         "**/node_modules": true,
-        "**/out": false,
+        "**/out": true,
         "**/next-env.d.ts": true,
         "**/.next": true,
         "**/build": true
