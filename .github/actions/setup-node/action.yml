@@ -8,6 +8,11 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - id: cd-directory
+      name: go to directory
+      run: cd ${{inputs.working-directory}}
+      shell: bash
+      
     - name: Setup Node.js ⚙️
       uses: actions/setup-node@v4
       with:
