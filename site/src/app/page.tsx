@@ -1,19 +1,17 @@
 import { promises as fs } from 'fs';
+import RankTable from '../components/RankTable';
+import IRankDataItem from '../types/IRankDataItem';
 
 async function Home() {
   const file = await fs.readFile(process.cwd() + '/src/data/window-rankings.json', 'utf8');
-  const data = JSON.parse(file);
-  const displayData = JSON.stringify(data['All-Time'], null, 2);
+  const data: IRankDataItem[] = JSON.parse(file)['All-Time'];
 
-  return (
-    <main>
-      <h1 className='text-3xl'>backyardultra.app</h1>
-      <p>An application for backyard ultras</p>
-      <pre>
-        {displayData}
-      </pre>
-    </main>
-  );
+  return <main>
+    <h1 className='p-4 text-3xl'>All time rankings</h1>
+    <div>
+      <RankTable data={data} />
+    </div>
+  </main>
 }
 
 export default Home;

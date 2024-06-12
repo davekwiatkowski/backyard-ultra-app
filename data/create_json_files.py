@@ -32,7 +32,7 @@ def add_columns(df):
     df['date'] = df['date'].dt.strftime('%Y-%m-%d')
 
     df['name'] = df['name'].str.replace('\\s+', ' ', regex=True)
-    df['id'] = df['name'].str.replace(' ', '-').str.lower()
+    df['id'] =  df['window'] + '_' + df['rank'].astype(str) + '_' + df['name']
 
     df['nat3'] = df['nat3'].str.replace('&nbsp;', '')
 
