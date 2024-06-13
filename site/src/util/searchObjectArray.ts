@@ -1,4 +1,4 @@
-function searchObjectArray(array: any[], str: string) {
+export function searchObjectArray<T extends object>(array: T[], str: string) {
     if (!str) {
         return array;
     }
@@ -6,7 +6,6 @@ function searchObjectArray(array: any[], str: string) {
     return array.filter(item =>
         Object.values(item).some((value) => {
             return `${value}`.toLowerCase().includes(search)
-        }));
+        })
+    );
 }
-
-export default searchObjectArray;
