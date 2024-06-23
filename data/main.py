@@ -13,7 +13,7 @@ def create_site_metadata():
     create_json_file(df, 'metadata', orient=None)
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description="Just an example", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser = argparse.ArgumentParser(description="Create data for backyardultra.app", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument("-s", "--scrape", action="store_true", help="should scrape web")
     args = parser.parse_args()
     config = vars(args)

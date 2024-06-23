@@ -5,11 +5,11 @@ import { IResultItem } from "../types/IResultItem";
 
 export const SearchBar: FC<{
     searchText: string,
-    searchKeyValuePair: { key: keyof IResultItem, value: string } | undefined
+    searchKeyValuePairs: { key: keyof IResultItem, value: string }[] | undefined
     onSearchTextChange: (value: string) => void,
 }> = ({
     searchText,
-    searchKeyValuePair,
+    searchKeyValuePairs,
     onSearchTextChange,
 }) => {
         const handleSearch: ChangeEventHandler<HTMLInputElement> = useCallback((e) => {
@@ -27,17 +27,25 @@ export const SearchBar: FC<{
                     </button>
                 }
             </label>
-            <div className="label">
-                <span className="label-text-alt">
-                    {
-                        searchKeyValuePair?.key && <>
-                            Filtering by {searchKeyValuePair?.key}=&quot;{searchKeyValuePair?.value}&quot;
-                        </>
-                    }
-                    {
-                        !searchKeyValuePair?.key && <br></br>
-                    }
-                </span>
+            <div className="label justify-start gap-1">
+                {
+                    searchKeyValuePairs?.map((kvp, index, array) => {
+                        return <span key={kvp.key + ':' + kvp.value} className="label-text-alt">
+                            {
+                                kvp.key && <>
+                                    {kvp.key}=&quot;{kvp.value}&quot;
+                                </>
+                            }
+                            {
+                                array.length > 1 && index < array.length - 1
+                                && <> &</>
+                            }
+                        </span>
+                    })
+                }
+                {
+                    !searchKeyValuePairs?.length && <br></br>
+                }
             </div>
         </div>
     }

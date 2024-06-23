@@ -12,6 +12,7 @@ export interface IResultItem {
     club: string;
     eventPlace: string;
     eventRank: string;
+    eventId: string;
     gender: string;
     personId: string;
 }

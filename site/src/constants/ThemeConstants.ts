@@ -1,5 +1,5 @@
 export enum Theme {
     LIGHT = 'autumn',
-    DARK = 'dracula',
+    DARK = 'sunset',
 }
 export type ThemeType = `${Theme}`

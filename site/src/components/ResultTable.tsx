@@ -9,9 +9,9 @@ import { getFlagEmoji } from "../util/getFlagEmoji";
 export const ResultTable: FC<{
     data: IResultItem[],
     searchText: string,
-    searchKeyValuePair: { key: keyof IResultItem, value: string } | undefined,
+    searchKeyValuePairs: { key: keyof IResultItem, value: string }[] | undefined,
     onSearchTextChange: (searchText: string) => void,
-}> = ({ data, searchText = '', searchKeyValuePair, onSearchTextChange }) => {
+}> = ({ data, searchText = '', searchKeyValuePairs, onSearchTextChange }) => {
     const [currentData, setCurrentData] = useState(data);
     const [page, setPage] = useState(0);
     const [currentPageData, setCurrentPageData] = useState(data.slice(0, MAX_ITEMS_PER_PAGE));
@@ -36,7 +36,7 @@ export const ResultTable: FC<{
     }, [sortCol, sortDir]);
 
     useEffect(() => {
-        const newCurrentData = [...searchObjectArray(data, searchText, searchKeyValuePair)];
+        const newCurrentData = [...searchObjectArray(data, searchText, searchKeyValuePairs)];
         if (sortCol) {
             newCurrentData.sort((a, b) => {
                 if (sortDir === 'desc') {
@@ -53,7 +53,7 @@ export const ResultTable: FC<{
             })
         }
         setCurrentData(newCurrentData);
-    }, [data, searchKeyValuePair, searchText, sortCol, sortDir]);
+    }, [data, searchKeyValuePairs, searchText, sortCol, sortDir]);
 
     useEffect(() => {
         setCurrentPageData(currentData.slice(page * MAX_ITEMS_PER_PAGE, (page + 1) * MAX_ITEMS_PER_PAGE));
@@ -64,7 +64,7 @@ export const ResultTable: FC<{
     }, [searchText]);
 
     return <div>
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto min-h-[620px] sm:min-h-[750px]">
             <table className='table table-sm sm:table-md'>
                 <thead>
                     <tr>
@@ -95,7 +95,7 @@ export const ResultTable: FC<{
                                 <td className='whitespace-nowrap'><button className="btn-link" onClick={() => onSearchTextChange(`personId:${item.personId}`)}>{item.name}</button></td>
                                 <td className='whitespace-nowrap'><button className="btn-link" onClick={() => onSearchTextChange(`gender:${item.gender}`)}>{item.gender}</button></td>
                                 <td className='whitespace-nowrap'><button className="btn-link" onClick={() => onSearchTextChange(`natFull:${item.natFull}`)}>{getFlagEmoji(item.nat2)} {item.natFull}</button></td>
-                                <td className='whitespace-nowrap'><button className="btn-link" onClick={() => onSearchTextChange(`race:${item.race}`)}>{item.race}</button></td>
+                                <td className='whitespace-nowrap'><button className="btn-link" onClick={() => onSearchTextChange(`race:${item.race}, date:${item.date}`)}>{item.race}</button></td>
                                 <td className='whitespace-nowrap'><button className="btn-link" onClick={() => onSearchTextChange(`date:${item.date}`)}>{item.date}</button></td>
                             </tr>
                         })

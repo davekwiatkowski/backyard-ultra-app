@@ -5,7 +5,7 @@ import { IResultItem } from "../types/IResultItem";
 import { ResultTable } from "./ResultTable";
 import { PageWrapper } from "./PageWrapper";
 import { SearchBar } from "./SearchBar";
-import { useSetSearchKeyValuePair } from "../util/useSetSearchKeyValuePair";
+import { useSetSearchKeyValuePairs } from "../util/useSetSearchKeyValuePairs";
 
 type TabType = 'table' | 'chart';
 
@@ -20,7 +20,7 @@ export const Client: FC<{
     const [searchText, setSearchText] = useState('');
     const [currentTab, setCurrentTab] = useState<TabType>('table');
 
-    const searchKeyValuePair = useSetSearchKeyValuePair(searchText, data);
+    const searchKeyValuePairs = useSetSearchKeyValuePairs(searchText, data);
 
     const handleRecentDateClick = useCallback(() => {
         setSearchText(`date:${mostRecentDate}`);
@@ -65,11 +65,11 @@ export const Client: FC<{
                 </div>
             </div>
         </div>
-        <SearchBar searchKeyValuePair={searchKeyValuePair} searchText={searchText} onSearchTextChange={setSearchText} />
+        <SearchBar searchKeyValuePairs={searchKeyValuePairs} searchText={searchText} onSearchTextChange={setSearchText} />
         <div role="tablist" className="tabs tabs-lifted p-4">
             <input type="radio" name="table" role="tab" className="tab" aria-label="Table" onChange={handleTabChange} checked={currentTab === 'table'} />
             <div role="tabpanel" className="tab-content bg-base-100 border-base-300 rounded-box p-6 overflow-x-hidden">
-                <ResultTable searchKeyValuePair={searchKeyValuePair} data={data} searchText={searchText} onSearchTextChange={setSearchText} />
+                <ResultTable searchKeyValuePairs={searchKeyValuePairs} data={data} searchText={searchText} onSearchTextChange={setSearchText} />
             </div>
             <input type="radio" name="chart" role="tab" className="tab" aria-label="Chart" onChange={handleTabChange} checked={currentTab === 'chart'} />
             <div role="tabpanel" className="tab-content bg-base-100 border-base-300 rounded-box p-6 overflow-x-hidden">

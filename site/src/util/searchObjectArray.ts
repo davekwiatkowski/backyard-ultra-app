@@ -1,9 +1,11 @@
-export function searchObjectArray<T extends object>(array: T[], str: string, searchKeyValuePair?: { key: keyof T, value: string }): T[] {
-    if (searchKeyValuePair) {
+export function searchObjectArray<T extends object>(array: T[], str: string, searchKeyValuePairs?: { key: keyof T, value: string }[]): T[] {
+    if (searchKeyValuePairs && searchKeyValuePairs.length) {
         return array
             .filter(item => {
-                const value = item[searchKeyValuePair.key];
-                return `${value}`.toLowerCase().includes(searchKeyValuePair.value.toLowerCase());
+                return searchKeyValuePairs.every(kvp => {
+                    const value = item[kvp.key];
+                    return `${value}`.toLowerCase().includes(kvp.value.toLowerCase());
+                });
             })
     }
 
@@ -13,7 +15,7 @@ export function searchObjectArray<T extends object>(array: T[], str: string, sea
     const search = str.toLowerCase();
     return array.filter(item =>
         Object.values(item).some((value) => {
-            return `${value}`.toLowerCase().includes(search)
+            return `${value}`.toLowerCase().includes(search);
         })
     );
 }

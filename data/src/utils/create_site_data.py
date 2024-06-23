@@ -38,6 +38,10 @@ def create_site_data():
         'Date': 'date'
     })
     df = df[df['name'].notnull()]
+
+    df = df[df['date'].notnull()]
+    df['date'] = df['date'].apply(lambda x: convert_backyard_date(x))
+    
     df['firstName'] = df['name'].apply(lambda x: get_first_name(x))
     df['lastName'] = df['name'].apply(lambda x: get_last_name(x))
     df['name'] = df['name'].apply(lambda x: convert_full_name(x))
@@ -53,7 +57,8 @@ def create_site_data():
     df['natFull'] = cc.pandas_convert(series=df['nat2'].dropna(), to='name_short', src='ISO2')
     
     df.loc[df['yards'] == 0, 'yards'] = (df['distanceKm'].dropna() / 6.7056).round(0).astype(int)
-    df['date'] = df['date'].apply(lambda x: convert_backyard_date(x))
+    pandas.set_option('display.max_rows', df.shape[0]+1)
+    
     df['rankResultAllTime'] = df['yards'].rank(ascending=False, method='min')
 
     df['eventRank'] = df.groupby('eventId')['yards'].rank(ascending=False, method='min')
