@@ -100,7 +100,7 @@ jobs:
           # default false
           # ___ allow_forks: true
 
-      - name: execute py script
+      - name: create data
         run: pipenv run start
 
       - name: upload site data
@@ -125,7 +125,8 @@ jobs:
       - name: Checkout 🛎️
         uses: actions/checkout@v4
 
-      - uses: actions/download-artifact@v4
+      - name: download site data
+        uses: actions/download-artifact@v4
         with:
           name: data
           path: ./site/src/data/

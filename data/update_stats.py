@@ -13,7 +13,7 @@ import time
 from urllib.parse import urlparse
 from urllib.parse import parse_qs
 
-from src.constants.project_constants import BUILD_FOLDER, EVENT_LIST_FILE_NAME
+from src.constants.project_constants import BUILD_FOLDER, EVENT_LIST_FILE_NAME, WAIT_TIME
 from src.utils.get_root import get_root
 from src.utils.create_json_file import create_json_file
 from src.utils.convert_backyard_date import convert_backyard_date
@@ -46,7 +46,7 @@ def write_results_for_event(event_id=83012):
     print(f'Writing results for event {event_id}...')
     driver.get(f'https://statistik.d-u-v.org/getresultevent.php?event={event_id}')
 
-    table = WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.ID, "Resultlist")))
+    table = WebDriverWait(driver, WAIT_TIME).until(EC.visibility_of_element_located((By.ID, "Resultlist")))
 
     event_file_path = get_event_file_path(event_id)
     os.makedirs(os.path.dirname(event_file_path), exist_ok=True)
@@ -91,7 +91,7 @@ def write_results_for_event_list():
         print(f'Scraping page {page}...')
         driver.get(f'https://statistik.d-u-v.org/geteventlist.php?year=all&dist=all&country=all&surface=Backy&sort=1&page={page}')
 
-        table = WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.ID, "Resultlist")))
+        table = WebDriverWait(driver, WAIT_TIME).until(EC.visibility_of_element_located((By.ID, "Resultlist")))
         
         event_list_file_path = f'{BUILD_FOLDER}/{EVENT_LIST_FILE_NAME}.csv'
         os.makedirs(os.path.dirname(event_list_file_path), exist_ok=True)
