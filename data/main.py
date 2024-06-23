@@ -14,7 +14,7 @@ def create_site_metadata():
     create_json_file(df, 'metadata', orient=None)
 
 if __name__ == '__main__':
-    # write_results_for_event_list()
-    # write_results_for_events()
-    # create_site_data()
+    write_results_for_event_list()
+    write_results_for_events()
+    create_site_data()
     create_site_metadata()
