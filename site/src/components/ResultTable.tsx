@@ -1,22 +1,21 @@
 'use client';
 
-import { FC, useCallback, useEffect, useMemo, useState } from "react";
+import { FC, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { MAX_ITEMS_PER_PAGE } from "../constants/TableConstants";
 import { searchObjectArray } from "../util/searchObjectArray";
 import { IResultItem } from "../types/IResultItem";
 import { getFlagEmoji } from "../util/getFlagEmoji";
+import { ResultsContext } from "../context/ResultsContext";
 
 export const ResultTable: FC<{
     data: IResultItem[],
-    searchText: string,
-    searchKeyValuePairs: { key: keyof IResultItem, value: string }[] | undefined,
-    onSearchTextChange: (searchText: string) => void,
-}> = ({ data, searchText = '', searchKeyValuePairs, onSearchTextChange }) => {
+}> = ({ data }) => {
     const [currentData, setCurrentData] = useState(data);
-    const [page, setPage] = useState(0);
     const [currentPageData, setCurrentPageData] = useState(data.slice(0, MAX_ITEMS_PER_PAGE));
     const [sortCol, setSortCol] = useState<keyof IResultItem>('yards');
     const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
+
+    const { searchFilters, searchText, addSearchFilter, page, setPage } = useContext(ResultsContext);
 
     const maxPage = useMemo(() => Math.ceil(currentData.length / MAX_ITEMS_PER_PAGE), [currentData]);
 
@@ -36,7 +35,7 @@ export const ResultTable: FC<{
     }, [sortCol, sortDir]);
 
     useEffect(() => {
-        const newCurrentData = [...searchObjectArray(data, searchText, searchKeyValuePairs)];
+        const newCurrentData = [...searchObjectArray(data, searchText, searchFilters)];
         if (sortCol) {
             newCurrentData.sort((a, b) => {
                 if (sortDir === 'desc') {
@@ -53,7 +52,7 @@ export const ResultTable: FC<{
             })
         }
         setCurrentData(newCurrentData);
-    }, [data, searchKeyValuePairs, searchText, sortCol, sortDir]);
+    }, [data, searchFilters, searchText, sortCol, sortDir]);
 
     useEffect(() => {
         setCurrentPageData(currentData.slice(page * MAX_ITEMS_PER_PAGE, (page + 1) * MAX_ITEMS_PER_PAGE));
@@ -92,11 +91,11 @@ export const ResultTable: FC<{
                                         ?? `DNF (${item.eventRank})`
                                     }
                                 </td>
-                                <td className='whitespace-nowrap'><button className="btn-link" onClick={() => onSearchTextChange(`personId:${item.personId}`)}>{item.name}</button></td>
-                                <td className='whitespace-nowrap'><button className="btn-link" onClick={() => onSearchTextChange(`gender:${item.gender}`)}>{item.gender}</button></td>
-                                <td className='whitespace-nowrap'><button className="btn-link" onClick={() => onSearchTextChange(`natFull:${item.natFull}`)}>{getFlagEmoji(item.nat2)} {item.natFull}</button></td>
-                                <td className='whitespace-nowrap'><button className="btn-link" onClick={() => onSearchTextChange(`race:${item.race}, date:${item.date}`)}>{item.race}</button></td>
-                                <td className='whitespace-nowrap'><button className="btn-link" onClick={() => onSearchTextChange(`date:${item.date}`)}>{item.date}</button></td>
+                                <td className='whitespace-nowrap'><button className="link" onClick={() => addSearchFilter('personId', item.personId)}>{item.name}</button></td>
+                                <td className='whitespace-nowrap'><button className="link" onClick={() => addSearchFilter('gender', item.gender)}>{item.gender}</button></td>
+                                <td className='whitespace-nowrap'><button className="link" onClick={() => addSearchFilter('natFull', item.natFull)}>{getFlagEmoji(item.nat2)} {item.natFull}</button></td>
+                                <td className='whitespace-nowrap'><button className="link" onClick={() => addSearchFilter('race', item.race)}>{item.race}</button></td>
+                                <td className='whitespace-nowrap'><button className="link" onClick={() => addSearchFilter('date', item.date)}>{item.date}</button></td>
                             </tr>
                         })
                     }

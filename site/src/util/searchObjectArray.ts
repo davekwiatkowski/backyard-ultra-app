@@ -1,13 +1,13 @@
-export function searchObjectArray<T extends object>(array: T[], str: string, searchKeyValuePairs?: { key: keyof T, value: string }[]): T[] {
-    if (searchKeyValuePairs && searchKeyValuePairs.length) {
-        return array
-            .filter(item => {
-                return searchKeyValuePairs.every(kvp => {
-                    const value = item[kvp.key];
-                    return `${value}`.toLowerCase().includes(kvp.value.toLowerCase());
+export function searchObjectArray<T extends object, K extends keyof T>(array: T[], str: string, searchFilters: Partial<{ [key in K]: string[] }>): T[] {
+    array = array
+        .filter(item => {
+            return Object.entries(searchFilters).every(([key, values]) => {
+                const value = item[key as keyof T]
+                return (values as string[]).some(v => {
+                    return `${value}`.toLowerCase().includes(v.toLowerCase());
                 });
-            })
-    }
+            });
+        })
 
     if (!str) {
         return array;

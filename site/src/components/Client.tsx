@@ -5,7 +5,7 @@ import { IResultItem } from "../types/IResultItem";
 import { ResultTable } from "./ResultTable";
 import { PageWrapper } from "./PageWrapper";
 import { SearchBar } from "./SearchBar";
-import { useSetSearchKeyValuePairs } from "../util/useSetSearchKeyValuePairs";
+import { Statistics } from "./Statistics";
 
 type TabType = 'table' | 'chart';
 
@@ -17,14 +17,8 @@ export const Client: FC<{
     version: string,
     racesCount: number,
 }> = ({ version, data, recentResultsCount, mostRecentDate, countriesCount, racesCount }) => {
-    const [searchText, setSearchText] = useState('');
     const [currentTab, setCurrentTab] = useState<TabType>('table');
 
-    const searchKeyValuePairs = useSetSearchKeyValuePairs(searchText, data);
-
-    const handleRecentDateClick = useCallback(() => {
-        setSearchText(`date:${mostRecentDate}`);
-    }, [mostRecentDate]);
     const handleTabChange: ChangeEventHandler<HTMLInputElement> = useCallback((event) => {
         setCurrentTab(event.currentTarget.name as TabType);
     }, []);
@@ -36,40 +30,14 @@ export const Client: FC<{
                 <p className='italic text-sm'>Note: Only includes runners who completed 7+ yards</p>
             </div>
             <div className="p-2 overflow-auto">
-                <div className="stats stats-horizontal shadow">
-                    <div className="stat place-items-center">
-                        <div className="stat-title">Latest results</div>
-                        <div className="stat-value">{recentResultsCount}</div>
-                        <div className="stat-desc">
-                            Held on {' '}
-                            <button className="btn-link" onClick={handleRecentDateClick}>{mostRecentDate}</button>
-                        </div>
-                    </div>
-                    <div className="stat place-items-center">
-                        <div className="stat-title">Countries</div>
-                        <div className="stat-value">{countriesCount}</div>
-                        <div className="stat-desc">With backyard results</div>
-                    </div>
-                    <div className="stat place-items-center">
-                        <div className="stat-title">Events</div>
-                        <div className="stat-value">{racesCount}</div>
-                        <div className="stat-desc">
-                            Worldwide
-                        </div>
-                    </div>
-                    <div className="stat place-items-center">
-                        <div className="stat-title">Results</div>
-                        <div className="stat-value">{data.length.toLocaleString()}</div>
-                        <div className="stat-desc">With 7+ yards</div>
-                    </div>
-                </div>
+                <Statistics recentResultsCount={recentResultsCount} countriesCount={countriesCount} racesCount={racesCount} resultsCount={data.length} mostRecentDate={mostRecentDate} />
             </div>
         </div>
-        <SearchBar searchKeyValuePairs={searchKeyValuePairs} searchText={searchText} onSearchTextChange={setSearchText} />
+        <SearchBar />
         <div role="tablist" className="tabs tabs-lifted p-4">
             <input type="radio" name="table" role="tab" className="tab" aria-label="Table" onChange={handleTabChange} checked={currentTab === 'table'} />
             <div role="tabpanel" className="tab-content bg-base-100 border-base-300 rounded-box p-6 overflow-x-hidden">
-                <ResultTable searchKeyValuePairs={searchKeyValuePairs} data={data} searchText={searchText} onSearchTextChange={setSearchText} />
+                <ResultTable data={data} />
             </div>
             <input type="radio" name="chart" role="tab" className="tab" aria-label="Chart" onChange={handleTabChange} checked={currentTab === 'chart'} />
             <div role="tabpanel" className="tab-content bg-base-100 border-base-300 rounded-box p-6 overflow-x-hidden">
