@@ -30,11 +30,11 @@ def create_driver():
     options.add_experimental_option('prefs', {'download.default_directory' : path})
     return webdriver.Chrome(options=options)
     
-def get_event_file_name(event_id):
+def get_event_file_path(event_id):
     return f'{BUILD_FOLDER}/events/{event_id}.csv'
     
 def should_skip_event_result(event_id):
-    return Path(get_event_file_name(event_id)).is_file()
+    return Path(get_event_file_path(event_id)).is_file()
 
 def write_results_for_event(event_id=83012):
     driver = create_driver()
@@ -48,9 +48,9 @@ def write_results_for_event(event_id=83012):
 
     table = WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.ID, "Resultlist")))
 
-    file_name = get_event_file_name(event_id)
-    os.makedirs(os.path.dirname(file_name), exist_ok=True)
-    with open(file_name, 'w', newline='') as csv_file:
+    event_file_path = get_event_file_path(event_id)
+    os.makedirs(os.path.dirname(event_file_path), exist_ok=True)
+    with open(event_file_path, 'w', newline='') as csv_file:
         writer = csv.writer(csv_file)
         writer.writerow(['EventId', 'Rank','Performance', "Surname, first name" , 'Club', 'Nat.', 'YOB','M/F','Rank M/F','Cat','Cat. Rank','hours','Age graded performance'])
         for tr in table.find_element(By.TAG_NAME, "tbody").find_elements(By.TAG_NAME, 'tr'):
@@ -92,7 +92,10 @@ def write_results_for_event_list():
         driver.get(f'https://statistik.d-u-v.org/geteventlist.php?year=all&dist=all&country=all&surface=Backy&sort=1&page={page}')
 
         table = WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.ID, "Resultlist")))
-        with open(f'{BUILD_FOLDER}/{EVENT_LIST_FILE_NAME}.csv', 'w' if page == 1 else 'a', newline='') as csv_file:
+        
+        event_list_file_path = f'{BUILD_FOLDER}/{EVENT_LIST_FILE_NAME}.csv'
+        os.makedirs(os.path.dirname(event_list_file_path), exist_ok=True)
+        with open(event_list_file_path, 'w' if page == 1 else 'a', newline='') as csv_file:
             writer = csv.writer(csv_file)
             if page == 1:
                 for tr in table.find_element(By.TAG_NAME, "thead").find_elements(By.TAG_NAME, 'tr'):

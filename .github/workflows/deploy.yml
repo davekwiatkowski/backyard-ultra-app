@@ -103,12 +103,14 @@ jobs:
       - name: execute py script
         run: pipenv run start
 
-      - uses: actions/upload-artifact@v4
+      - name: upload site data
+        uses: actions/upload-artifact@v4
         with:
           name: data
           path: ./site/src/data/
 
-      - uses: actions/upload-artifact@v4
+      - name: update raw data
+        uses: actions/upload-artifact@v4
         with:
           name: raw_data
           path: ./data/build/
