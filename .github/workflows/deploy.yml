@@ -58,7 +58,7 @@ jobs:
           # Optional, no need to specify if PR is
           # ___ commit: ${{github.event.pull_request.head.sha}}
           # Optional, will use the specified branch. Defaults to all branches
-          branch: master
+          # ___ branch: main
           # Optional, defaults to all types
           # ___ event: push
           # Optional, will use specified workflow run
