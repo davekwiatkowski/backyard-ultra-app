@@ -1,1 +1,2 @@
 BUILD_FOLDER = 'build'
+EVENT_LIST_FILE_NAME = 'event_list'

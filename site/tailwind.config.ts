@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import { Theme } from "./src/constants/ThemeConstants";
 
 const config: Config = {
   content: [
@@ -10,7 +11,7 @@ const config: Config = {
     require('daisyui'),
   ],
   daisyui: {
-    themes: ["cupcake"],
+    themes: [Theme.DARK, Theme.LIGHT],
   },
 };
 

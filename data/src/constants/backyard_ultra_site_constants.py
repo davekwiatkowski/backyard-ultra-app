@@ -1,1 +1,0 @@
-WORLD_RANKINGS_FILE_NAME = 'Backyard Ultra - World Ranking'

@@ -1,4 +1,12 @@
-export function searchObjectArray<T extends object>(array: T[], str: string) {
+export function searchObjectArray<T extends object>(array: T[], str: string, searchKeyValuePair?: { key: keyof T, value: string }): T[] {
+    if (searchKeyValuePair) {
+        return array
+            .filter(item => {
+                const value = item[searchKeyValuePair.key];
+                return `${value}`.toLowerCase().includes(searchKeyValuePair.value.toLowerCase());
+            })
+    }
+
     if (!str) {
         return array;
     }

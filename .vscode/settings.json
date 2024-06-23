@@ -4,6 +4,6 @@
         "**/out": true,
         "**/next-env.d.ts": true,
         "**/.next": true,
-        "**/build": true
+        "**/build": false
     }
 }

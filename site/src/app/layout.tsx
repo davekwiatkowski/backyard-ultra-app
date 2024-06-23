@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { Theme } from "../constants/ThemeConstants";
 
 export const metadata: Metadata = {
   title: "backyardultra.app",
@@ -12,7 +13,7 @@ function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" data-theme='cupcake'>
+    <html lang="en" data-theme={Theme.LIGHT} className="select-none">
       <body>{children}</body>
     </html>
   );
