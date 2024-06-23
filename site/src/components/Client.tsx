@@ -68,13 +68,5 @@ export const Client: FC<{
                 TODO: Put chart here...
             </div>
         </div>
-        <footer className="footer p-4 bg-base-100 footer-center text-base-content">
-            <aside>
-                <p className="text-xs">
-                    © 2024{' - '}
-                    <a className="btn-link" href="https://davekwiatkowski.com">Dave Kwiatkowski</a>
-                </p>
-            </aside>
-        </footer>
     </PageWrapper >
 }

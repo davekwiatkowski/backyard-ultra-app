@@ -36,69 +36,13 @@ jobs:
         id: download-raw-data
         uses: dawidd6/action-download-artifact@v6
         with:
-          # Optional, GitHub token, a Personal Access Token with `public_repo` scope if needed
-          # Required, if the artifact is from a different repo
-          # Required, if the repo is private a Personal Access Token with `repo` scope is needed or GitHub token in a job where the permissions `action` scope set to `read`
-          # ___ github_token: ${{secrets.GITHUB_TOKEN}}
-          # Optional, workflow file name or ID
-          # If not specified, will be inferred from run_id (if run_id is specified), or will be the current workflow
-          # ___ workflow: workflow_name.yml
-          # If no workflow is set and workflow_search set to true, then the most recent workflow matching
-          # all other criteria will be looked up instead of using the current workflow
           workflow_search: true
-          # Optional, the status or conclusion of a completed workflow to search for
-          # Can be one of a workflow conclusion:
-          #   "failure", "success", "neutral", "cancelled", "skipped", "timed_out", "action_required"
-          # Or a workflow status:
-          #   "completed", "in_progress", "queued"
-          # Use the empty string ("") to ignore status or conclusion in the search
           workflow_conclusion: success
-          # Optional, will get head commit SHA
-          # ___ pr: ${{github.event.pull_request.number}}
-          # Optional, no need to specify if PR is
-          # ___ commit: ${{github.event.pull_request.head.sha}}
-          # Optional, will use the specified branch. Defaults to all branches
-          # ___ branch: main
-          # Optional, defaults to all types
-          # ___ event: push
-          # Optional, will use specified workflow run
-          # use ${{ github.event.workflow_run.id }} when your action runs in a workflow_run event
-          # and wants to download from the triggering workflow run
-          # ___ run_id: 1122334455
-          # Optional, run number from the workflow
-          # ___ run_number: 34
-          # Optional, uploaded artifact name,
-          # will download all artifacts if not specified
-          # and extract them into respective subdirectories
-          # https://github.com/actions/download-artifact#download-all-artifacts
-          # is treated as a regular expression if input name_is_regexp is true
-          # will download only those artifacts with a name that matches this regular expression
-          # https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions
           name: raw_data
-          # Optional, name is treated as a regular expression if set true
-          # ___ name_is_regexp: true
-          # Optional, a directory where to extract artifact(s), defaults to the current directory
           path: ./data/build/
-          # Optional, defaults to current repo
-          # ___ repo: ${{ github.repository }}
-          # Optional, check the workflow run to whether it has an artifact
-          # then will get the last available artifact from the previous workflow
-          # default false, just try to download from the last one
           check_artifacts: true
-          # Optional, search for the last workflow run whose stored an artifact named as in `name` input
-          # default false
           search_artifacts: true
-          # Optional, choose to skip unpacking the downloaded artifact(s)
-          # default false
-          # ___ skip_unpack: false
-          # Optional, choose how to exit the action if no artifact is found
-          # can be one of:
-          #  "fail", "warn", "ignore"
-          # default fail
           if_no_artifact_found: warn
-          # Optional, include forks when searching for artifacts
-          # default false
-          # ___ allow_forks: true
 
       - name: create data
         run: pipenv run start
