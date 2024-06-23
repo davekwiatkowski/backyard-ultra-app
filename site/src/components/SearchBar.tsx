@@ -24,11 +24,6 @@ export const SearchBar: FC = () => {
         </label>
         <div className="label justify-start gap-1 pt-4 flex-wrap">
             {
-                Object.keys(searchFilters).length > 1
-                &&
-                <button className="btn btn-xs btn-accent" onClick={() => clearSearchFilters()}>Clear all</button>
-            }
-            {
                 Object.entries(searchFilters).map(([key, value]) =>
                     <div key={key + '-' + value} className="badge badge-outline whitespace-nowrap badge-lg pl-0 max-w-80 md:max-w-none justify-start">
                         <button className="btn btn-xs btn-ghost" onClick={() => removeSearchFilter(key as keyof IResultItem)}>
@@ -50,6 +45,11 @@ export const SearchBar: FC = () => {
                         </span>
                     </div>
                 )
+            }
+            {
+                Object.keys(searchFilters).length > 1
+                &&
+                <button className="btn btn-xs btn-accent" onClick={() => clearSearchFilters()}>Clear all</button>
             }
         </div>
     </div>
