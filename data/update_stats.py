@@ -67,7 +67,6 @@ def write_results_for_events(limit=None):
 
     start_time = time.time()    
 
-
     old_events_count = len([event_id for event_id in df['EventId'] if should_skip_event_result(event_id)])
     new_events = [event_id for event_id in df['EventId'] if not should_skip_event_result(event_id)]
     if limit:
@@ -119,6 +118,9 @@ def write_results_for_event_list():
     driver.close()
 
 def create_merged_json_file():
+    print('Creating merged json file...')
+    start_time = time.time()    
+
     joined_files = os.path.join(f'{BUILD_FOLDER}/events', "*.csv") 
     joined_list = glob.glob(joined_files) 
     df = pandas.concat(map(pandas.read_csv, joined_list), ignore_index=True)
@@ -171,7 +173,9 @@ def create_merged_json_file():
 
     create_json_file(df, 'results')
 
+    print(f"Finished creating merged JSON file in {(time.time() - start_time)} seconds.")
+
 if __name__ == '__main__':
-    # write_results_for_event_list()
-    # write_results_for_events()
+    write_results_for_event_list()
+    write_results_for_events()
     create_merged_json_file()
