@@ -15,7 +15,8 @@ export const Client: FC<{
     mostRecentDate: string,
     countriesCount: number,
     version: string,
-}> = ({ version, data, recentResultsCount, mostRecentDate, countriesCount }) => {
+    racesCount: number,
+}> = ({ version, data, recentResultsCount, mostRecentDate, countriesCount, racesCount }) => {
     const [searchText, setSearchText] = useState('');
     const [currentTab, setCurrentTab] = useState<TabType>('table');
 
@@ -40,7 +41,7 @@ export const Client: FC<{
                         <div className="stat-title">Latest results</div>
                         <div className="stat-value">{recentResultsCount}</div>
                         <div className="stat-desc">
-                            Ran on{' '}
+                            Held on {' '}
                             <button className="btn-link" onClick={handleRecentDateClick}>{mostRecentDate}</button>
                         </div>
                     </div>
@@ -50,7 +51,14 @@ export const Client: FC<{
                         <div className="stat-desc">With backyard results</div>
                     </div>
                     <div className="stat place-items-center">
-                        <div className="stat-title">Total backyard results</div>
+                        <div className="stat-title">Events</div>
+                        <div className="stat-value">{racesCount}</div>
+                        <div className="stat-desc">
+                            Worldwide
+                        </div>
+                    </div>
+                    <div className="stat place-items-center">
+                        <div className="stat-title">Results</div>
                         <div className="stat-value">{data.length.toLocaleString()}</div>
                         <div className="stat-desc">With 7+ yards</div>
                     </div>

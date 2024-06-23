@@ -20,7 +20,7 @@ def create_site_data():
     df = pandas.merge(df, event_list_df, on="EventId", how="outer")
     df = df.rename(columns={
         'EventId': 'eventId', 
-        'Rank': 'eventRank',
+        'Rank': 'eventRankNoOverlap',
         'Performance': 'distanceKm',
         'Surname, first name': 'name',
         'Club': 'club',
@@ -55,13 +55,17 @@ def create_site_data():
     df.loc[df['yards'] == 0, 'yards'] = (df['distanceKm'].dropna() / 6.7056).round(0).astype(int)
     df['date'] = df['date'].apply(lambda x: convert_backyard_date(x))
     df['rankResultAllTime'] = df['yards'].rank(ascending=False, method='min')
-    df['eventPlace'] = df['eventRank'].apply(lambda x: 'Win' if x == 1 else 'Assist' if x == 2 else None)
+
+    df['eventRank'] = df.groupby('eventId')['yards'].rank(ascending=False, method='min')
+    df['eventPlace'] = df['eventRankNoOverlap'].apply(lambda x: 'W' if x == 1 else 'A' if x == 2 else None)
+    df['isTiedWin'] = df[df['eventPlace'] == 'W'].duplicated(subset=['eventId','eventPlace'], keep=False)
+    df.loc[df['isTiedWin'] == True, 'eventPlace'] = None
 
     df['personId'] = df['name'].str.lower()
 
     df = df.drop(columns=['birthday', 'genderRank', 'eventDistance', 'eventFinishers', 'IAU-Label', 'Unnamed: 6', 'ageGradedPerformance', 'categoryRank' ])
     df = df.drop_duplicates()
-    df = df.sort_values(by=['yards', 'eventPlace' ,'date'], ascending=[False, False, True])
+    df = df.sort_values(by=['yards', 'eventPlace', 'eventRankNoOverlap', 'date'], ascending=[False, False, True, True])
 
     create_json_file(df, 'results')
 

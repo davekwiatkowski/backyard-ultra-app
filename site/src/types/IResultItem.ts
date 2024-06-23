@@ -11,6 +11,7 @@ export interface IResultItem {
     rankResultAllTime: number;
     club: string;
     eventPlace: string;
+    eventRank: string;
     gender: string;
     personId: string;
 }

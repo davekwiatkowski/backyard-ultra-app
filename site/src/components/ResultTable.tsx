@@ -84,7 +84,14 @@ export const ResultTable: FC<{
                             return <tr key={item.firstName + '-' + item.lastName + '-' + item.date + '-' + item.race}>
                                 <td className='whitespace-nowrap'>{item.rankResultAllTime}</td>
                                 <td className='whitespace-nowrap'>{item.yards}</td>
-                                <td className='whitespace-nowrap'>{item.eventPlace}</td>
+                                <td className='whitespace-nowrap'>
+                                    {
+                                        (item.eventPlace === 'W' ? 'Win'
+                                            : item.eventPlace === 'A' ? 'Assist'
+                                                : null)
+                                        ?? `DNF (${item.eventRank})`
+                                    }
+                                </td>
                                 <td className='whitespace-nowrap'><button className="btn-link" onClick={() => onSearchTextChange(`personId:${item.personId}`)}>{item.name}</button></td>
                                 <td className='whitespace-nowrap'><button className="btn-link" onClick={() => onSearchTextChange(`gender:${item.gender}`)}>{item.gender}</button></td>
                                 <td className='whitespace-nowrap'><button className="btn-link" onClick={() => onSearchTextChange(`natFull:${item.natFull}`)}>{getFlagEmoji(item.nat2)} {item.natFull}</button></td>
