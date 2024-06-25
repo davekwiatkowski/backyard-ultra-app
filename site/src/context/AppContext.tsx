@@ -1,14 +1,14 @@
-import { createContext } from "react";
-import { Theme, ThemeType } from "../constants/ThemeConstants";
+import { createContext } from 'react';
+import { Theme, ThemeType } from '../constants/ThemeConstants';
 
 interface IAppContext {
-    theme: ThemeType;
-    setTheme: (theme: ThemeType) => void;
+  theme: ThemeType;
+  setTheme: (theme: ThemeType) => void;
 }
 
 const defaultAppContext: IAppContext = {
-    theme: Theme.LIGHT,
-    setTheme: () => { }
+  theme: Theme.LIGHT,
+  setTheme: () => {},
 };
 
 export const AppContext = createContext<IAppContext>(defaultAppContext);

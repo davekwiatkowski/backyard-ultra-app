@@ -1,9 +1,28 @@
 {
-    "files.exclude": {
-        "**/node_modules": true,
-        "**/out": true,
-        "**/next-env.d.ts": true,
-        "**/.next": true,
-        "**/build": false
-    }
+  "files.exclude": {
+    "**/node_modules": true,
+    "**/out": true,
+    "**/next-env.d.ts": true,
+    "**/.next": true,
+    "**/build": false
+  },
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit"
+  },
+  "eslint.format.enable": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "eslint.workingDirectories": ["./site"]
 }
