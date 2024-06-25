@@ -91,18 +91,20 @@ export const ResultTable: FC<{
 
   return (
     <div>
-      <div className="overflow-x-auto">
-        <button
-          className="btn btn-xs btn-outline"
-          disabled={!Object.keys(sorts).length}
-          onClick={() => setSorts({})}
-        >
-          Clear all sorting
-          {!!Object.keys(sorts).length && (
-            <span className="badge badge-accent badge-sm">{Object.keys(sorts).length}</span>
-          )}
-        </button>
-        <div className="h-[407px] sm:h-[595px] md:h-[723px]">
+      <div>
+        <div className="pb-4">
+          <button
+            className="btn btn-xs btn-outline"
+            disabled={!Object.keys(sorts).length}
+            onClick={() => setSorts({})}
+          >
+            Clear all sorting
+            {!!Object.keys(sorts).length && (
+              <span className="badge badge-accent badge-sm">{Object.keys(sorts).length}</span>
+            )}
+          </button>
+        </div>
+        <div className="h-[407px] sm:h-[595px] md:h-[723px] overflow-x-auto">
           {!currentPageData.length && (
             <div className="justify-center items-center flex h-full w-full flex-col gap-4">
               No results for &quot;{searchText}&quot;
