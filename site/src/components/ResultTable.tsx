@@ -14,12 +14,19 @@ export const ResultTable: FC<{
 }> = ({ data }) => {
   const [currentData, setCurrentData] = useState(data);
   const [currentPageData, setCurrentPageData] = useState(data.slice(0, MAX_ITEMS_PER_PAGE));
-  const [sorts, setSorts] = useState<{
-    [key in keyof Partial<IResultItem>]: { dir: SortDirection; priority: number };
-  }>({});
 
-  const { searchFilters, searchText, setSearchText, addSearchFilter, page, setPage } =
-    useContext(ResultsContext);
+  const {
+    searchFilters,
+    searchText,
+    addSearchFilter,
+    page,
+    setPage,
+    sorts,
+    sortBy: sort,
+    clearSorting: clearSorts,
+    clearSearchFilters,
+    clearSearchText,
+  } = useContext(ResultsContext);
 
   const maxPage = useMemo(() => Math.ceil(currentData.length / MAX_ITEMS_PER_PAGE), [currentData]);
 
@@ -33,23 +40,10 @@ export const ResultTable: FC<{
     setPage(page + 1);
   }, [maxPage, page, setPage]);
 
-  const handleSort = useCallback(
-    (key: keyof IResultItem) => {
-      const newSorts = { ...sorts };
-      Object.keys(newSorts).forEach((key) => {
-        ++(newSorts[key as keyof IResultItem] as any).priority;
-      });
-      newSorts[key] = {
-        dir: sorts[key]?.dir === undefined ? 'asc' : sorts[key]?.dir === 'asc' ? 'desc' : undefined,
-        priority: 0,
-      };
-      if (newSorts[key]?.dir === undefined) {
-        delete newSorts[key];
-      }
-      setSorts(newSorts);
-    },
-    [sorts],
-  );
+  const handleNoResultsClick = useCallback(() => {
+    clearSearchText();
+    clearSearchFilters();
+  }, [clearSearchFilters, clearSearchText]);
 
   useEffect(() => {
     const newCurrentData = [...searchObjectArray(data, searchText, searchFilters)];
@@ -96,7 +90,7 @@ export const ResultTable: FC<{
           <button
             className="btn btn-xs btn-outline"
             disabled={!Object.keys(sorts).length}
-            onClick={() => setSorts({})}
+            onClick={() => clearSorts()}
           >
             Clear all sorting
             {!!Object.keys(sorts).length && (
@@ -108,8 +102,8 @@ export const ResultTable: FC<{
           {!currentPageData.length && (
             <div className="justify-center items-center flex h-full w-full flex-col gap-4">
               No results for &quot;{searchText}&quot;
-              <button className="btn btn-secondary btn-sm" onClick={() => setSearchText('')}>
-                Clear search
+              <button className="btn btn-secondary btn-sm" onClick={handleNoResultsClick}>
+                Clear search and filtering
               </button>
             </div>
           )}
@@ -121,56 +115,56 @@ export const ResultTable: FC<{
                     <TableSortButton
                       title="Rank"
                       dir={sorts.rankResultAllTime?.dir}
-                      onSort={() => handleSort('rankResultAllTime')}
+                      onSort={() => sort('rankResultAllTime')}
                     />
                   </th>
                   <th>
                     <TableSortButton
                       title="Yards"
                       dir={sorts.yards?.dir}
-                      onSort={() => handleSort('yards')}
+                      onSort={() => sort('yards')}
                     />
                   </th>
                   <th>
                     <TableSortButton
                       title="Place"
                       dir={sorts.eventPlace?.dir}
-                      onSort={() => handleSort('eventPlace')}
+                      onSort={() => sort('eventPlace')}
                     />
                   </th>
                   <th>
                     <TableSortButton
                       title="Name"
                       dir={sorts.name?.dir}
-                      onSort={() => handleSort('name')}
+                      onSort={() => sort('name')}
                     />
                   </th>
                   <th>
                     <TableSortButton
                       title="Gender"
                       dir={sorts.gender?.dir}
-                      onSort={() => handleSort('gender')}
+                      onSort={() => sort('gender')}
                     />
                   </th>
                   <th>
                     <TableSortButton
                       title="Nationality"
                       dir={sorts.natFull?.dir}
-                      onSort={() => handleSort('natFull')}
+                      onSort={() => sort('natFull')}
                     />
                   </th>
                   <th>
                     <TableSortButton
                       title="Race"
                       dir={sorts.race?.dir}
-                      onSort={() => handleSort('race')}
+                      onSort={() => sort('race')}
                     />
                   </th>
                   <th>
                     <TableSortButton
                       title="Date"
                       dir={sorts.date?.dir}
-                      onSort={() => handleSort('date')}
+                      onSort={() => sort('date')}
                     />
                   </th>
                 </tr>
@@ -207,10 +201,7 @@ export const ResultTable: FC<{
                         </button>
                       </td>
                       <td className="whitespace-nowrap">
-                        <button
-                          className="link"
-                          onClick={() => addSearchFilter('natFull', item.natFull)}
-                        >
+                        <button className="link" onClick={() => addSearchFilter('nat2', item.nat2)}>
                           {getFlagEmoji(item.nat2)} {item.natFull}
                         </button>
                       </td>

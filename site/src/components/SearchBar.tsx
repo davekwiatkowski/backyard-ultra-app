@@ -5,8 +5,14 @@ import { ResultsContext } from '../context/ResultsContext';
 import { IResultItem } from '../types/IResultItem';
 
 export const SearchBar: FC = () => {
-  const { searchText, setSearchText, searchFilters, removeSearchFilter, clearSearchFilters } =
-    useContext(ResultsContext);
+  const {
+    searchText,
+    setSearchText,
+    searchFilters,
+    removeSearchFilter,
+    clearSearchFilters,
+    clearSearchText,
+  } = useContext(ResultsContext);
 
   const handleSearch: ChangeEventHandler<HTMLInputElement> = useCallback(
     (e) => {
@@ -41,7 +47,7 @@ export const SearchBar: FC = () => {
           <button
             className="btn btn-circle btn-outline btn-sm"
             disabled={!searchText}
-            onClick={() => setSearchText('')}
+            onClick={() => clearSearchText()}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -62,40 +68,37 @@ export const SearchBar: FC = () => {
       </label>
       <div className="label justify-start gap-1 pt-4 flex-wrap">
         {Object.entries(searchFilters).map(([key, value]) => (
-          <div
+          <button
             key={key + '-' + value}
-            className="badge badge-outline whitespace-nowrap badge-lg pl-0 max-w-80 md:max-w-none justify-start"
+            className="btn btn-xs"
+            onClick={() => removeSearchFilter(key as keyof IResultItem)}
           >
-            <button
-              className="btn btn-xs btn-ghost"
-              onClick={() => removeSearchFilter(key as keyof IResultItem)}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
             <span className="truncate">
               {key}={value}
             </span>
-          </div>
+          </button>
         ))}
         {Object.keys(searchFilters).length > 1 && (
-          <button className="btn btn-xs btn-accent" onClick={() => clearSearchFilters()}>
+          <button className="btn btn-xs btn-outline" onClick={() => clearSearchFilters()}>
             Clear all filters
-            <span className="badge badge-sm">{Object.keys(searchFilters).length}</span>
+            <span className="badge badge-accent badge-sm">{Object.keys(searchFilters).length}</span>
           </button>
         )}
+        {!Object.keys(searchFilters).length && <br></br>}
       </div>
     </div>
   );

@@ -1,29 +1,21 @@
 'use client';
 
 import { FC, useCallback, useContext } from 'react';
-import { StorageKeyConstants } from '../constants/StorageKeyConstants';
-import { Theme } from '../constants/ThemeConstants';
-import { AppContext } from '../context/AppContext';
+import { ThemeContext } from '../context/ThemeContext';
 
 export const ThemeController: FC = () => {
-  const { theme, setTheme } = useContext(AppContext);
+  const { isDarkTheme, setIsDarkTheme } = useContext(ThemeContext);
 
   const handleThemeChange = useCallback(() => {
-    const newTheme = theme === Theme.DARK ? Theme.LIGHT : Theme.DARK;
-    setTheme(newTheme);
-    localStorage.setItem(
-      StorageKeyConstants.IS_DARK_THEME,
-      JSON.stringify(newTheme === Theme.DARK),
-    );
-  }, [setTheme, theme]);
+    setIsDarkTheme(!isDarkTheme);
+  }, [isDarkTheme, setIsDarkTheme]);
 
   return (
     <label className="swap swap-rotate btn-ghost btn">
       <input
         type="checkbox"
         className="theme-controller"
-        value={theme}
-        checked={theme === Theme.DARK}
+        checked={isDarkTheme}
         onChange={handleThemeChange}
       />
       <svg

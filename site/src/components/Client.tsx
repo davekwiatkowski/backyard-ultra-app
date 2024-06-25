@@ -35,7 +35,7 @@ export const Client: FC<{
         />
       </div>
       <SearchBar />
-      <div role="tablist" className="tabs tabs-lifted p-4">
+      <div role="tablist" className="tabs tabs-lifted p-4 pt-0">
         <input
           type="radio"
           role="tab"

@@ -41,3 +41,5 @@ export enum Theme {
   DARK = DaisyUITheme.luxury,
 }
 export type ThemeType = `${Theme}`;
+
+export const PREFERS_DARK_THEME_MEDIA_QUERY = '(prefers-color-scheme: dark)';
