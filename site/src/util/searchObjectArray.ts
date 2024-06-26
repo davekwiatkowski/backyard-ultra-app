@@ -1,10 +1,10 @@
 export function searchObjectArray<T extends object, K extends keyof T>(
-  array: T[],
-  str: string,
-  searchFilters: Partial<{ [key in K]: string[] }>,
+  data: T[],
+  searchText: string,
+  filters: Partial<{ [key in K]: string[] }>,
 ): T[] {
-  array = array.filter((item) => {
-    return Object.entries(searchFilters).every(([key, values]) => {
+  data = data.filter((item) => {
+    return Object.entries(filters).every(([key, values]) => {
       const value = item[key as keyof T];
       return (values as string[]).some((v) => {
         return `${value}`.toLowerCase().includes(v.toLowerCase());
@@ -12,11 +12,13 @@ export function searchObjectArray<T extends object, K extends keyof T>(
     });
   });
 
-  if (!str) {
-    return array;
+  searchText = searchText.replace(/\s+/g, ' ').trim();
+
+  if (!searchText) {
+    return data;
   }
-  const search = str.toLowerCase();
-  return array.filter((item) =>
+  const search = searchText.toLowerCase();
+  return data.filter((item) =>
     Object.values(item).some((value) => {
       return `${value}`.toLowerCase().includes(search);
     }),
