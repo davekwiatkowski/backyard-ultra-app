@@ -1,3 +1,5 @@
+'use client';
+
 import { FC, useContext } from 'react';
 import { ResultsContext } from '../context/ResultsContext';
 

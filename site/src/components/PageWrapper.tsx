@@ -3,14 +3,14 @@
 import React, { FC } from 'react';
 import { ThemeController } from './ThemeController';
 import Link from 'next/link';
-import metadata from '../data/metadata.json';
 import { ResultsContextProvider } from '../context/ResultsContext';
 import { ThemeContextProvider } from '../context/ThemeContext';
+import { IMetadata } from '../types/IMetadata';
 
 export const PageWrapper: FC<{
   children: React.JSX.Element | React.JSX.Element[];
-  version: string;
-}> = ({ children, version }) => {
+  metadata: IMetadata;
+}> = ({ children, metadata }) => {
   return (
     <ThemeContextProvider>
       <ResultsContextProvider>
@@ -20,7 +20,7 @@ export const PageWrapper: FC<{
               backyardultra.app
             </Link>
             <p className="text-xs">
-              Last update: {new Date(metadata.lastUpdate.epoch).toLocaleDateString()}
+              Updated on {new Date(metadata.lastUpdate).toLocaleDateString()}
             </p>
           </div>
           <div className="flex-none">
@@ -30,7 +30,7 @@ export const PageWrapper: FC<{
         <main>{children}</main>
         <footer className="footer p-4 bg-base-100 footer-center text-base-content">
           <aside>
-            <p className="font-mono text-xs">Version {version}</p>
+            <p className="font-mono text-xs">Version {metadata.version}</p>
             <p className="text-xs">
               © 2024{' - '}
               <a className="link" href="https://davekwiatkowski.com">

@@ -6,17 +6,18 @@ import { ResultTable } from './ResultTable';
 import { PageWrapper } from './PageWrapper';
 import { SearchBar } from './SearchBar';
 import { Statistics } from './Statistics';
+import { IMetadata } from '../types/IMetadata';
 
 type TabType = 'results' | 'countries' | 'people' | 'races';
 
 export const Client: FC<{
   data: IResultItem[];
+  metadata: IMetadata;
   recentResultsCount: number;
   mostRecentDate: string;
   countriesCount: number;
-  version: string;
   racesCount: number;
-}> = ({ version, data, recentResultsCount, mostRecentDate, countriesCount, racesCount }) => {
+}> = ({ data, metadata, recentResultsCount, mostRecentDate, countriesCount, racesCount }) => {
   const [currentTab, setCurrentTab] = useState<TabType>('results');
 
   const handleTabChange: ChangeEventHandler<HTMLInputElement> = useCallback((event) => {
@@ -24,7 +25,7 @@ export const Client: FC<{
   }, []);
 
   return (
-    <PageWrapper version={version}>
+    <PageWrapper metadata={metadata}>
       <div className="p-4 overflow-auto">
         <Statistics
           recentResultsCount={recentResultsCount}

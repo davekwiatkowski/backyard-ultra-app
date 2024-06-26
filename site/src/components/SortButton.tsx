@@ -1,3 +1,5 @@
+'use client';
+
 import { FC } from 'react';
 import { SortAscIcon, SortDescIcon, SortNoneIcon } from './icons/SortIcons';
 import { SortDirection } from '../types/SortDirection';

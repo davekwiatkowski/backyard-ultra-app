@@ -3,7 +3,7 @@
 import React, { FC, createContext, useCallback } from 'react';
 import { IResultItem } from '../types/IResultItem';
 import { SortDirection } from '../types/SortDirection';
-import { usePersistState } from '../util/usePersistState';
+import { usePersistState } from '../util/hooks/usePersistState';
 import { StorageKeyConstants } from '../constants/StorageKeyConstants';
 
 interface IResultsContext<K extends keyof any> {

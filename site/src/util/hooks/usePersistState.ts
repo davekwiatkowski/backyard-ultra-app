@@ -1,3 +1,5 @@
+'use client';
+
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 export const usePersistState = <T>(defaultValue: T, storageKey: string) => {
@@ -6,7 +8,6 @@ export const usePersistState = <T>(defaultValue: T, storageKey: string) => {
   useEffect(() => {
     const localStorageValue = localStorage.getItem(storageKey);
     if (storageKey in localStorage) {
-      console.log({ storageKey, localStorageValue });
       setValue(JSON.parse(localStorageValue as string) as T);
     }
   }, [storageKey]);
