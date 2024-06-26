@@ -37,6 +37,7 @@ export const SearchBar: FC = () => {
           />
         </svg>
         <input
+          name="search"
           type="text"
           className="grow"
           placeholder="Search"

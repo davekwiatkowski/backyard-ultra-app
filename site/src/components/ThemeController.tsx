@@ -13,6 +13,7 @@ export const ThemeController: FC = () => {
   return (
     <label className="swap swap-rotate btn-ghost btn">
       <input
+        name="theme-controller"
         type="checkbox"
         className="theme-controller"
         checked={isDarkTheme}
