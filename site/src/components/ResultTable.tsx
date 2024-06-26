@@ -97,9 +97,15 @@ export const ResultTable: FC<{
         <div className="h-[407px] sm:h-[595px] md:h-[723px] overflow-x-auto">
           {!currentPageData.length && (
             <div className="justify-center items-center flex h-full w-full flex-col gap-4">
-              No results for &quot;{searchText}&quot;
+              <span>
+                No results for &quot;{searchText}&quot;
+                {!!Object.keys(searchFilters).length && <span> with filters</span>}
+              </span>
               <button className="btn btn-secondary btn-sm" onClick={handleNoResultsClick}>
-                Clear search and filtering
+                <span>
+                  Clear search
+                  {!!Object.keys(searchFilters).length && <span> and filters</span>}
+                </span>
               </button>
             </div>
           )}
