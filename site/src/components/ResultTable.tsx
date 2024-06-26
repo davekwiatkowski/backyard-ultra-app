@@ -22,8 +22,8 @@ export const ResultTable: FC<{
     page,
     setPage,
     sorts,
-    sortBy: sort,
-    clearSorting: clearSorts,
+    sortBy,
+    clearSorting,
     clearSearchFilters,
     clearSearchText,
   } = useContext(ResultsContext);
@@ -79,10 +79,6 @@ export const ResultTable: FC<{
     );
   }, [currentData, page]);
 
-  useEffect(() => {
-    setPage(0);
-  }, [searchText, setPage]);
-
   return (
     <div>
       <div>
@@ -90,7 +86,7 @@ export const ResultTable: FC<{
           <button
             className="btn btn-xs btn-outline"
             disabled={!Object.keys(sorts).length}
-            onClick={() => clearSorts()}
+            onClick={() => clearSorting()}
           >
             Clear all sorting
             {!!Object.keys(sorts).length && (
@@ -115,56 +111,56 @@ export const ResultTable: FC<{
                     <TableSortButton
                       title="Rank"
                       dir={sorts.rankResultAllTime?.dir}
-                      onSort={() => sort('rankResultAllTime')}
+                      onSort={() => sortBy('rankResultAllTime')}
                     />
                   </th>
                   <th>
                     <TableSortButton
                       title="Yards"
                       dir={sorts.yards?.dir}
-                      onSort={() => sort('yards')}
+                      onSort={() => sortBy('yards')}
                     />
                   </th>
                   <th>
                     <TableSortButton
                       title="Place"
                       dir={sorts.eventPlace?.dir}
-                      onSort={() => sort('eventPlace')}
+                      onSort={() => sortBy('eventPlace')}
                     />
                   </th>
                   <th>
                     <TableSortButton
                       title="Name"
                       dir={sorts.name?.dir}
-                      onSort={() => sort('name')}
+                      onSort={() => sortBy('name')}
                     />
                   </th>
                   <th>
                     <TableSortButton
                       title="Gender"
                       dir={sorts.gender?.dir}
-                      onSort={() => sort('gender')}
+                      onSort={() => sortBy('gender')}
                     />
                   </th>
                   <th>
                     <TableSortButton
                       title="Nationality"
                       dir={sorts.natFull?.dir}
-                      onSort={() => sort('natFull')}
+                      onSort={() => sortBy('natFull')}
                     />
                   </th>
                   <th>
                     <TableSortButton
                       title="Race"
                       dir={sorts.race?.dir}
-                      onSort={() => sort('race')}
+                      onSort={() => sortBy('race')}
                     />
                   </th>
                   <th>
                     <TableSortButton
                       title="Date"
                       dir={sorts.date?.dir}
-                      onSort={() => sort('date')}
+                      onSort={() => sortBy('date')}
                     />
                   </th>
                 </tr>

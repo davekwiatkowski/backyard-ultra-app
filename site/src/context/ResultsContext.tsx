@@ -2,8 +2,9 @@
 
 import React, { FC, createContext, useCallback } from 'react';
 import { IResultItem } from '../types/IResultItem';
-import { useQueryState, parseAsString, parseAsJson, parseAsInteger } from 'nuqs';
 import { SortDirection } from '../types/SortDirection';
+import { usePersistState } from '../util/usePersistState';
+import { StorageKeyConstants } from '../constants/StorageKeyConstants';
 
 interface IResultsContext<K extends keyof any> {
   // search
@@ -49,18 +50,15 @@ export const ResultsContext =
 export const ResultsContextProvider: FC<{ children: React.JSX.Element | React.JSX.Element[] }> = ({
   children,
 }) => {
-  const [page, setPage] = useQueryState('page', parseAsInteger.withDefault(0));
-  const [searchText, setSearchText] = useQueryState('search', parseAsString.withDefault(''));
-  const [searchFilters, setSearchFilters] = useQueryState(
-    'filter',
-    parseAsJson<Partial<{ [key: string]: string[] }>>().withDefault({}),
+  const [page, setPage] = usePersistState(0, StorageKeyConstants.PAGE);
+  const [searchText, setSearchText] = usePersistState('', StorageKeyConstants.SEARCH);
+  const [searchFilters, setSearchFilters] = usePersistState<Partial<{ [key: string]: string[] }>>(
+    {},
+    StorageKeyConstants.FILTERS,
   );
-  const [sorts, setSorts] = useQueryState(
-    'sorts',
-    parseAsJson<Partial<{ [key: string]: { dir: SortDirection; priority: number } }>>().withDefault(
-      {},
-    ),
-  );
+  const [sorts, setSorts] = usePersistState<
+    Partial<{ [key: string]: { dir: SortDirection; priority: number } }>
+  >({}, StorageKeyConstants.SORTS);
 
   const addSearchFilter = useCallback(
     (key: keyof IResultItem, value: string) => {
@@ -116,6 +114,14 @@ export const ResultsContextProvider: FC<{ children: React.JSX.Element | React.JS
     setSearchText('');
   }, [setSearchText]);
 
+  const handleSearchTextChange = useCallback(
+    (searchText: string) => {
+      setSearchText(searchText);
+      setPage(0);
+    },
+    [setPage, setSearchText],
+  );
+
   return (
     <ResultsContext.Provider
       value={{
@@ -129,7 +135,7 @@ export const ResultsContextProvider: FC<{ children: React.JSX.Element | React.JS
         addSearchFilter,
         removeSearchFilter,
         clearSearchFilters,
-        setSearchText,
+        setSearchText: handleSearchTextChange,
         clearSorting,
       }}
     >
