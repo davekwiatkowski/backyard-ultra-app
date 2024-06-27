@@ -19,7 +19,7 @@ export const PageWrapper: FC<{
             <Link className="btn btn-ghost text-xl" href="/">
               backyardultra.app
             </Link>
-            <p className="text-xs" suppressHydrationWarning={true}>
+            <p className="text-xs" suppressHydrationWarning>
               Updated on {new Date(metadata.lastUpdate).toLocaleDateString()}
             </p>
           </div>

@@ -17,7 +17,16 @@ export const Client: FC<{
   mostRecentDate: string;
   countriesCount: number;
   racesCount: number;
-}> = ({ data, metadata, recentResultsCount, mostRecentDate, countriesCount, racesCount }) => {
+  seasons: number[];
+}> = ({
+  data,
+  metadata,
+  recentResultsCount,
+  mostRecentDate,
+  countriesCount,
+  racesCount,
+  seasons,
+}) => {
   const [currentTab, setCurrentTab] = useState<TabType>('results');
 
   const handleTabChange: ChangeEventHandler<HTMLInputElement> = useCallback((event) => {
@@ -50,7 +59,7 @@ export const Client: FC<{
           role="tabpanel"
           className="tab-content bg-base-100 border-base-300 rounded-box p-6 overflow-x-hidden"
         >
-          <ResultTable data={data} />
+          <ResultTable data={data} seasons={seasons} />
         </div>
       </div>
     </PageWrapper>

@@ -5,6 +5,7 @@ import { IResultItem } from '../types/IResultItem';
 import { SortDirection } from '../types/SortDirection';
 import { usePersistState } from '../util/hooks/usePersistState';
 import { StorageKeyConstants } from '../constants/StorageKeyConstants';
+import cloneDeep from 'lodash.clonedeep';
 
 interface IResultsContext<K extends keyof any> {
   // search
@@ -15,7 +16,9 @@ interface IResultsContext<K extends keyof any> {
   searchFilters: Partial<{ [key in K]: string[] }>;
   addSearchFilter: (key: K, value: string) => void;
   removeSearchFilter: (key: K) => void;
+  removeSearchFilters: (keys: K[]) => void;
   clearSearchFilters: () => void;
+  replaceSearchFilters: (addKey: K, addValue: string, removeKeys: K[]) => void;
   // pagination
   page: number;
   setPage: (page: number) => void;
@@ -34,7 +37,9 @@ const defaultResultsContext: IResultsContext<keyof IResultItem> = {
   searchFilters: {},
   addSearchFilter: () => {},
   removeSearchFilter: () => {},
+  removeSearchFilters: () => {},
   clearSearchFilters: () => {},
+  replaceSearchFilters: () => {},
   // pagination
   page: 0,
   setPage: () => {},
@@ -60,14 +65,34 @@ export const ResultsContextProvider: FC<{ children: React.JSX.Element | React.JS
     Partial<{ [key: string]: { dir: SortDirection; priority: number } }>
   >({}, StorageKeyConstants.SORTS);
 
+  const replaceSearchFilters = useCallback(
+    (addKey: keyof IResultItem, addValue: string, removeKeys: (keyof IResultItem)[]) => {
+      const newSearchFilters = cloneDeep(searchFilters);
+      for (let removeKey of removeKeys) {
+        delete newSearchFilters[removeKey];
+      }
+      const values = newSearchFilters[addKey] ?? [];
+      if (values.includes(addValue)) {
+        return;
+      }
+      const newValues = [...values, addValue];
+      newSearchFilters[addKey] = newValues;
+      setSearchFilters(newSearchFilters);
+      setPage(0);
+    },
+    [searchFilters, setPage, setSearchFilters],
+  );
+
   const addSearchFilter = useCallback(
     (key: keyof IResultItem, value: string) => {
-      const values = searchFilters[key] ?? [];
+      const newSearchFilters = cloneDeep(searchFilters);
+      const values = newSearchFilters[key] ?? [];
       if (values.includes(value)) {
         return;
       }
       const newValues = [...values, value];
-      setSearchFilters({ ...searchFilters, [key]: newValues });
+      newSearchFilters[key] = newValues;
+      setSearchFilters(newSearchFilters);
       setPage(0);
     },
     [searchFilters, setPage, setSearchFilters],
@@ -75,8 +100,20 @@ export const ResultsContextProvider: FC<{ children: React.JSX.Element | React.JS
 
   const removeSearchFilter = useCallback(
     (key: keyof IResultItem) => {
-      const newSearchFilters = { ...searchFilters };
+      const newSearchFilters = cloneDeep(searchFilters);
       delete newSearchFilters[key];
+      setSearchFilters(newSearchFilters);
+      setPage(0);
+    },
+    [searchFilters, setPage, setSearchFilters],
+  );
+
+  const removeSearchFilters = useCallback(
+    (keys: (keyof IResultItem)[]) => {
+      const newSearchFilters = cloneDeep(searchFilters);
+      for (let key of keys) {
+        delete newSearchFilters[key];
+      }
       setSearchFilters(newSearchFilters);
       setPage(0);
     },
@@ -134,6 +171,8 @@ export const ResultsContextProvider: FC<{ children: React.JSX.Element | React.JS
         setPage,
         addSearchFilter,
         removeSearchFilter,
+        removeSearchFilters,
+        replaceSearchFilters,
         clearSearchFilters,
         setSearchText: handleSearchTextChange,
         clearSorting,

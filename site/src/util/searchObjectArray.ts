@@ -4,10 +4,14 @@ export function searchObjectArray<T extends object, K extends keyof T>(
   filters: Partial<{ [key in K]: string[] }>,
 ): T[] {
   data = data.filter((item) => {
-    return Object.entries(filters).every(([key, values]) => {
-      const value = item[key as keyof T];
-      return (values as string[]).some((v) => {
-        return `${value}`.toLowerCase() === `${v}`.toLowerCase();
+    return Object.entries(filters).every(([filterKey, filterValues]) => {
+      const value = item[filterKey as keyof T];
+      return (filterValues as string[]).some((filterValue) => {
+        const filterValueCleaned = `${filterValue}`.toLowerCase();
+        if (Array.isArray(value)) {
+          return value.map((v) => `${v}`.toLowerCase()).includes(filterValueCleaned);
+        }
+        return `${value}`.toLowerCase() === filterValueCleaned;
       });
     });
   });

@@ -9,7 +9,7 @@ import time
 from src.utils.convert_nat3 import convert_nat3
 from src.utils.convert_backyard_race import convert_backyard_race
 from src.constants.project_constants import BUILD_FOLDER, EVENT_LIST_FILE_PATH
-from src.utils.create_json_file import create_json_file
+from src.utils.create_json_file import create_json_file, create_json_file_from_data
 from src.utils.convert_backyard_date import convert_backyard_date
 from src.utils.name import convert_full_name, get_first_name, get_last_name
 
@@ -36,15 +36,18 @@ def add_season_bests(df: DataFrame):
     max_year = max_date.year
     if max_date < datetime.strptime(f'{max_year}-08-16', '%Y-%m-%d'):
         max_year -= 1
-    if min_date < datetime.strptime(f'{min_year}-08-16', '%Y-%m-%d'):
+    if min_date > datetime.strptime(f'{min_year}-08-16', '%Y-%m-%d'):
         min_year += 1
     
     columns = []
+    seasons = []
     for year in range(min_year, max_year + 1):
         print(f'Adding season best for year: {year}')
         column_name = f'isSeasonBest{year}'
         df = add_personal_best(df, f'{year - 2}-08-16', f'{year}-08-15', column_name, year)
         columns.append(column_name)
+        seasons.append(year)
+    create_json_file_from_data(seasons, 'seasons')
     df['seasonBests'] = df[columns].values.tolist()
     df = df.drop(columns=columns)
     return df
@@ -114,3 +117,5 @@ def create_site_data():
     create_json_file(df, 'results')
 
     print(f"Finished creating merged JSON file in {(time.time() - start_time)} seconds.")
+
+    return df

@@ -10,6 +10,9 @@ export default async function Landing() {
   const metadataFile = await fs.readFile(process.cwd() + '/src/data/metadata.json', 'utf8');
   const metadata: IMetadata = JSON.parse(metadataFile);
 
+  const seasonsFile = await fs.readFile(process.cwd() + '/src/data/seasons.json', 'utf8');
+  const seasons: number[] = JSON.parse(seasonsFile);
+
   const mostRecentDate = resultsData.map((v) => v['date']).sort((a, b) => b.localeCompare(a))[0];
   const recentRanks = resultsData.filter((v) => v.date === mostRecentDate);
   const racesCount = resultsData
@@ -31,6 +34,7 @@ export default async function Landing() {
       recentResultsCount={recentRanks.length}
       mostRecentDate={mostRecentDate}
       countriesCount={countries.length}
+      seasons={seasons}
     />
   );
 }

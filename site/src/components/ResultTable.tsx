@@ -11,10 +11,8 @@ import { SortDirection } from '../types/SortDirection';
 
 export const ResultTable: FC<{
   data: IResultItem[];
-}> = ({ data }) => {
-  const [currentData, setCurrentData] = useState(data);
-  const [currentPageData, setCurrentPageData] = useState(data.slice(0, MAX_ITEMS_PER_PAGE));
-
+  seasons: number[];
+}> = ({ data, seasons }) => {
   const {
     searchFilters,
     searchText,
@@ -26,8 +24,12 @@ export const ResultTable: FC<{
     clearSorting,
     clearSearchFilters,
     clearSearchText,
-    removeSearchFilter,
+    replaceSearchFilters,
+    removeSearchFilters,
   } = useContext(ResultsContext);
+
+  const [currentData, setCurrentData] = useState(data);
+  const [currentPageData, setCurrentPageData] = useState(data.slice(0, MAX_ITEMS_PER_PAGE));
 
   const maxPage = useMemo(() => Math.ceil(currentData.length / MAX_ITEMS_PER_PAGE), [currentData]);
 
@@ -46,9 +48,16 @@ export const ResultTable: FC<{
     clearSearchFilters();
   }, [clearSearchFilters, clearSearchText]);
 
-  const isPBsOnly = useMemo(() => {
-    return !!searchFilters.isPersonalBest && Boolean(searchFilters.isPersonalBest[0]);
-  }, [searchFilters.isPersonalBest]);
+  const seasonSelectorValue = useMemo<'personal-bests' | 'all' | number>(() => {
+    const seasonBest = searchFilters.seasonBests?.[0];
+    if (seasonBest) {
+      return parseInt(seasonBest);
+    }
+    if (Boolean(searchFilters.isPersonalBest?.[0])) {
+      return 'personal-bests';
+    }
+    return 'all';
+  }, [searchFilters]);
 
   useEffect(() => {
     const newCurrentData = [...searchObjectArray(data, searchText, searchFilters)];
@@ -87,34 +96,39 @@ export const ResultTable: FC<{
   return (
     <div>
       <div>
-        <div className="pb-4 flex justify-between items-center">
+        <div className="pb-4 flex gap-4 items-center">
+          <select
+            value={seasonSelectorValue}
+            className="select select-bordered w-fit max-w-xs select-sm"
+            onChange={(e) => {
+              const selected = e.currentTarget.value;
+              if (selected === 'personal-bests') {
+                replaceSearchFilters('isPersonalBest', 'true', ['seasonBests']);
+              } else if (seasons.includes(parseInt(selected))) {
+                replaceSearchFilters('seasonBests', selected, ['seasonBests', 'isPersonalBest']);
+              } else {
+                removeSearchFilters(['isPersonalBest', 'seasonBests']);
+              }
+            }}
+          >
+            <option value="all">All results</option>
+            <option value="personal-bests">Personal bests</option>
+            {seasons.map((season) => (
+              <option value={season} key={season}>
+                {`Towards Big's ${season}`}
+              </option>
+            ))}
+          </select>
           <button
             className="btn btn-xs btn-outline"
             disabled={!Object.keys(sorts).length}
             onClick={() => clearSorting()}
           >
-            Clear all sorting
+            Clear sorting
             {!!Object.keys(sorts).length && (
               <span className="badge badge-accent badge-sm">{Object.keys(sorts).length}</span>
             )}
           </button>
-          <div className="form-control">
-            <label className="label cursor-pointer gap-2">
-              <span className="label-text">{isPBsOnly ? 'Only PBs' : 'All results'}</span>
-              <input
-                type="checkbox"
-                className="toggle"
-                checked={isPBsOnly}
-                onChange={() => {
-                  if (isPBsOnly) {
-                    removeSearchFilter('isPersonalBest');
-                  } else {
-                    addSearchFilter('isPersonalBest', 'true');
-                  }
-                }}
-              />
-            </label>
-          </div>
         </div>
         <div className="overflow-x-auto">
           {!currentPageData.length && (
@@ -202,28 +216,36 @@ export const ResultTable: FC<{
                     >
                       <td className="whitespace-nowrap">{item.rankResultAllTime}</td>
                       <td className="whitespace-nowrap">
-                        <div className="flex flex-row justify-between gap-2">
+                        <div className="flex flex-row justify-between gap-1 items-center">
                           <span>{item.yards}</span>
                           <span className="flex gap-1">
                             {item.seasonBests.map((year) => {
                               if (!year) return;
                               return (
-                                <span
+                                <button
                                   key={year}
-                                  className="tooltip text-accent font-bold"
+                                  onClick={() => {
+                                    replaceSearchFilters('seasonBests', `${year}`, [
+                                      'isPersonalBest',
+                                      'seasonBests',
+                                    ]);
+                                  }}
+                                  className="btn btn-ghost btn-circle btn-xs tooltip text-accent font-bold"
                                   data-tip={`Best towards Big's ${year}`}
                                 >
                                   {`${year}`.substring(2)}
-                                </span>
+                                </button>
                               );
                             })}
                             {item.isPersonalBest && (
                               <button
                                 className="btn btn-ghost btn-circle btn-xs tooltip"
                                 data-tip="Personal best"
-                                onClick={() =>
-                                  addSearchFilter('isPersonalBest', `${item.isPersonalBest}`)
-                                }
+                                onClick={() => {
+                                  replaceSearchFilters('isPersonalBest', `${true}`, [
+                                    'seasonBests',
+                                  ]);
+                                }}
                               >
                                 {item.isPersonalBest && '🏅'}
                               </button>
@@ -269,8 +291,14 @@ export const ResultTable: FC<{
                         </button>
                       </td>
                       <td className="whitespace-nowrap">
-                        <button className="link" onClick={() => addSearchFilter('date', item.date)}>
-                          {item.date}
+                        <button
+                          className="link"
+                          onClick={() => addSearchFilter('date', item.date)}
+                          suppressHydrationWarning
+                        >
+                          {new Date(item.date).toLocaleDateString(undefined, {
+                            dateStyle: 'medium',
+                          })}
                         </button>
                       </td>
                     </tr>
