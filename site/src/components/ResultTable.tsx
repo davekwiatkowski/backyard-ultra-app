@@ -174,13 +174,6 @@ export const ResultTable: FC<{
                   </th>
                   <th>
                     <TableSortButton
-                      title="Nationality"
-                      dir={sorts.natFull?.dir}
-                      onSort={() => sortBy('natFull')}
-                    />
-                  </th>
-                  <th>
-                    <TableSortButton
                       title="Race"
                       dir={sorts.race?.dir}
                       onSort={() => sortBy('race')}
@@ -236,16 +229,20 @@ export const ResultTable: FC<{
                           className={`link ${item.gender === 'F' && 'text-primary'}`}
                           onClick={() => addSearchFilter('personId', item.personId)}
                         >
+                          <span className="tooltip mr-1" data-tip={item.natFull}>
+                            {getFlagEmoji(item.nat2)}
+                          </span>
                           {item.name}
                         </button>
                       </td>
                       <td className="whitespace-nowrap">
-                        <button className="link" onClick={() => addSearchFilter('nat2', item.nat2)}>
-                          {getFlagEmoji(item.nat2)} {item.natFull}
-                        </button>
-                      </td>
-                      <td className="whitespace-nowrap">
-                        <button className="link" onClick={() => addSearchFilter('race', item.race)}>
+                        <button
+                          className="link"
+                          onClick={() => addSearchFilter('eventId', item.eventId)}
+                        >
+                          <span className="tooltip mr-1" data-tip={item.eventNatFull}>
+                            {getFlagEmoji(item.eventNat2)}
+                          </span>
                           {item.race}
                         </button>
                       </td>

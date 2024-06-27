@@ -7,7 +7,7 @@ export function searchObjectArray<T extends object, K extends keyof T>(
     return Object.entries(filters).every(([key, values]) => {
       const value = item[key as keyof T];
       return (values as string[]).some((v) => {
-        return `${value}`.toLowerCase().includes(v.toLowerCase());
+        return `${value}`.toLowerCase() === `${v}`.toLowerCase();
       });
     });
   });

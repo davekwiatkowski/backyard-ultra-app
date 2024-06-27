@@ -4,9 +4,10 @@ import os
 import numpy
 import pandas
 from pandas import DataFrame
-import country_converter as coco
 import time
 
+from src.utils.convert_nat3 import convert_nat3
+from src.utils.convert_backyard_race import convert_backyard_race
 from src.constants.project_constants import BUILD_FOLDER, EVENT_LIST_FILE_PATH
 from src.utils.create_json_file import create_json_file
 from src.utils.convert_backyard_date import convert_backyard_date
@@ -82,21 +83,15 @@ def create_site_data():
 
     df = df[df['date'].notnull()]
     df['date'] = df['date'].apply(lambda x: convert_backyard_date(x))
-
     df['firstName'] = df['name'].apply(lambda x: get_first_name(x))
     df['lastName'] = df['name'].apply(lambda x: get_last_name(x))
     df['name'] = df['name'].apply(lambda x: convert_full_name(x))
     df['distanceKm'] = pandas.to_numeric(df['distanceKm'].dropna().str.replace(' km', ''))
     
-    cc = coco.CountryConverter()
-    iso3_nat3s = ['GRL', 'MAC']
-    ioc_nat3 = df[~df['nat3'].isin(iso3_nat3s)]['nat3'].dropna()
-    iso3_nat3 = df[df['nat3'].isin(iso3_nat3s)]['nat3'].dropna()
-    nat2_1 = cc.pandas_convert(series=ioc_nat3, to='ISO2', src='IOC')
-    nat2_2 = cc.pandas_convert(series=iso3_nat3, to='ISO2', src='ISO3')
-    df['nat2'] = pandas.concat([nat2_1, nat2_2])
-    df['natFull'] = cc.pandas_convert(series=df['nat2'].dropna(), to='name_short', src='ISO2')
-    
+    convert_backyard_race(df)
+    convert_nat3(df, 'nat')
+    convert_nat3(df, 'eventNat')
+
     df.loc[df['yards'] == 0, 'yards'] = (df['distanceKm'].dropna() / 6.7056).round(0).astype(int)
     pandas.set_option('display.max_rows', df.shape[0]+1)
     
