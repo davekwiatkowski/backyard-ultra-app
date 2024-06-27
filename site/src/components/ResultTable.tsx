@@ -110,7 +110,7 @@ export const ResultTable: FC<{
             </label>
           </div>
         </div>
-        <div className="h-[407px] sm:h-[595px] md:h-[723px] overflow-x-auto">
+        <div className="overflow-x-auto">
           {!currentPageData.length && (
             <div className="justify-center items-center flex h-full w-full flex-col gap-4">
               {!searchText && !Object.keys(searchFilters).length && (
@@ -226,23 +226,31 @@ export const ResultTable: FC<{
                       </td>
                       <td className="whitespace-nowrap">
                         <button
+                          onClick={() => addSearchFilter('nat2', item.nat2)}
+                          className="tooltip btn btn-xs btn-ghost btn-circle"
+                          data-tip={item.natFull}
+                        >
+                          {getFlagEmoji(item.nat2)}
+                        </button>
+                        <button
                           className={`link ${item.gender === 'F' && 'text-primary'}`}
                           onClick={() => addSearchFilter('personId', item.personId)}
                         >
-                          <span className="tooltip mr-1" data-tip={item.natFull}>
-                            {getFlagEmoji(item.nat2)}
-                          </span>
                           {item.name}
                         </button>
                       </td>
                       <td className="whitespace-nowrap">
                         <button
+                          onClick={() => addSearchFilter('eventNat2', item.eventNat2)}
+                          className="tooltip btn btn-xs btn-ghost btn-circle"
+                          data-tip={item.eventNatFull}
+                        >
+                          {getFlagEmoji(item.eventNat2)}
+                        </button>
+                        <button
                           className="link"
                           onClick={() => addSearchFilter('eventId', item.eventId)}
                         >
-                          <span className="tooltip mr-1" data-tip={item.eventNatFull}>
-                            {getFlagEmoji(item.eventNat2)}
-                          </span>
                           {item.race}
                         </button>
                       </td>
