@@ -15,4 +15,6 @@ export interface IResultItem {
   eventId: string;
   gender: string;
   personId: string;
+  isPersonalBest: boolean;
+  seasonBests: (number | null)[];
 }

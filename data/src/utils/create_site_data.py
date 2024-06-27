@@ -1,6 +1,9 @@
+from datetime import datetime
 import glob
 import os
+import numpy
 import pandas
+from pandas import DataFrame
 import country_converter as coco
 import time
 
@@ -8,6 +11,42 @@ from src.constants.project_constants import BUILD_FOLDER, EVENT_LIST_FILE_PATH
 from src.utils.create_json_file import create_json_file
 from src.utils.convert_backyard_date import convert_backyard_date
 from src.utils.name import convert_full_name, get_first_name, get_last_name
+
+def get_max_yards(group):
+    return group.loc[group['yards'].idxmax()]
+
+def add_personal_best(df: DataFrame, start_date=None, end_date=None, column_name='isPersonalBest', value=True):
+    bests = df.copy()
+    if start_date and end_date:
+        bests = bests.loc[(bests['date'] >= start_date) & (bests['date'] <= end_date)]
+    bests = bests.groupby('personId').apply(get_max_yards)
+    bests.reset_index(drop = True, inplace = True)
+    
+    df.reset_index(drop = True, inplace = True)
+    df = pandas.merge(df, bests, how='left', indicator=column_name)
+    df[column_name] = numpy.where(df[column_name] == 'both', value, None)
+    return df
+
+def add_season_bests(df: DataFrame):
+    dates = pandas.to_datetime(df['date'], format='%Y-%m-%d')
+    min_date = dates.min()
+    max_date = dates.max() + pandas.Timedelta(days=365 * 2)
+    min_year = min_date.year
+    max_year = max_date.year
+    if max_date < datetime.strptime(f'{max_year}-08-16', '%Y-%m-%d'):
+        max_year -= 1
+    if min_date < datetime.strptime(f'{min_year}-08-16', '%Y-%m-%d'):
+        min_year += 1
+    
+    columns = []
+    for year in range(min_year, max_year + 1):
+        print(f'Adding season best for year: {year}')
+        column_name = f'isSeasonBest{year}'
+        df = add_personal_best(df, f'{year - 2}-08-16', f'{year}-08-15', column_name, year)
+        columns.append(column_name)
+    df['seasonBests'] = df[columns].values.tolist()
+    df = df.drop(columns=columns)
+    return df
 
 def create_site_data():
     print('Creating merged json file...')
@@ -18,6 +57,8 @@ def create_site_data():
     df = pandas.concat(map(pandas.read_csv, joined_list), ignore_index=True)
     event_list_df = pandas.read_csv(EVENT_LIST_FILE_PATH)
     df = pandas.merge(df, event_list_df, on="EventId", how="outer")
+
+    df = df.drop(columns=['IAU-Label', 'Unnamed: 6'])
     df = df.rename(columns={
         'EventId': 'eventId', 
         'Rank': 'eventRankNoOverlap',
@@ -41,7 +82,7 @@ def create_site_data():
 
     df = df[df['date'].notnull()]
     df['date'] = df['date'].apply(lambda x: convert_backyard_date(x))
-    
+
     df['firstName'] = df['name'].apply(lambda x: get_first_name(x))
     df['lastName'] = df['name'].apply(lambda x: get_last_name(x))
     df['name'] = df['name'].apply(lambda x: convert_full_name(x))
@@ -68,9 +109,12 @@ def create_site_data():
 
     df['personId'] = df['name'].str.lower()
 
-    df = df.drop(columns=['birthday', 'genderRank', 'eventDistance', 'eventFinishers', 'IAU-Label', 'Unnamed: 6', 'ageGradedPerformance', 'categoryRank' ])
+    df = df.drop(columns=['birthday', 'genderRank', 'eventDistance', 'eventFinishers', 'ageGradedPerformance', 'categoryRank' ])
     df = df.drop_duplicates()
     df = df.sort_values(by=['yards', 'eventPlace', 'eventRankNoOverlap', 'date'], ascending=[False, False, True, True])
+
+    df = add_personal_best(df)
+    df = add_season_bests(df)
 
     create_json_file(df, 'results')
 

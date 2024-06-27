@@ -14,6 +14,7 @@ export const ResultTable: FC<{
 }> = ({ data }) => {
   const [currentData, setCurrentData] = useState(data);
   const [currentPageData, setCurrentPageData] = useState(data.slice(0, MAX_ITEMS_PER_PAGE));
+  const [showPBsOnly, setShowPBsOnly] = useState(false);
 
   const {
     searchFilters,
@@ -46,7 +47,9 @@ export const ResultTable: FC<{
   }, [clearSearchFilters, clearSearchText]);
 
   useEffect(() => {
-    const newCurrentData = [...searchObjectArray(data, searchText, searchFilters)];
+    const newCurrentData = [...searchObjectArray(data, searchText, searchFilters)].filter(
+      (value) => !showPBsOnly || value.isPersonalBest,
+    );
     const sortsArray = Object.entries(sorts) as [
       keyof IResultItem,
       { dir: SortDirection; priority: number },
@@ -71,7 +74,7 @@ export const ResultTable: FC<{
         });
       });
     setCurrentData(newCurrentData);
-  }, [data, searchFilters, searchText, sorts]);
+  }, [data, searchFilters, searchText, showPBsOnly, sorts]);
 
   useEffect(() => {
     setCurrentPageData(
@@ -82,7 +85,7 @@ export const ResultTable: FC<{
   return (
     <div>
       <div>
-        <div className="pb-4">
+        <div className="pb-4 flex justify-between items-center">
           <button
             className="btn btn-xs btn-outline"
             disabled={!Object.keys(sorts).length}
@@ -93,20 +96,48 @@ export const ResultTable: FC<{
               <span className="badge badge-accent badge-sm">{Object.keys(sorts).length}</span>
             )}
           </button>
+          <div className="form-control">
+            <label className="label cursor-pointer gap-2">
+              <span className="label-text">{showPBsOnly ? 'Only PBs' : 'All results'}</span>
+              <input
+                type="checkbox"
+                className="toggle"
+                checked={showPBsOnly}
+                onChange={() => {
+                  setShowPBsOnly(!showPBsOnly);
+                }}
+              />
+            </label>
+          </div>
         </div>
         <div className="h-[407px] sm:h-[595px] md:h-[723px] overflow-x-auto">
           {!currentPageData.length && (
             <div className="justify-center items-center flex h-full w-full flex-col gap-4">
-              <span>
-                No results for &quot;{searchText}&quot;
-                {!!Object.keys(searchFilters).length && <span> with filters</span>}
-              </span>
-              <button className="btn btn-secondary btn-sm" onClick={handleNoResultsClick}>
-                <span>
-                  Clear search
-                  {!!Object.keys(searchFilters).length && <span> and filters</span>}
-                </span>
-              </button>
+              {!searchText && !Object.keys(searchFilters).length && (
+                <span>Oops! No results 😟</span>
+              )}
+              {!!searchText && (
+                <>
+                  <span>
+                    No results for &quot;{searchText}&quot;
+                    {!!Object.keys(searchFilters).length && <span> with filters</span>}
+                  </span>
+                  <button className="btn btn-secondary btn-sm" onClick={handleNoResultsClick}>
+                    <span>
+                      Clear search
+                      {!!Object.keys(searchFilters).length && <span> and filters</span>}
+                    </span>
+                  </button>
+                </>
+              )}
+              {!searchText && !!Object.keys(searchFilters).length && (
+                <>
+                  <span>No results for filters</span>
+                  <button className="btn btn-secondary btn-sm" onClick={handleNoResultsClick}>
+                    <span>Clear filters</span>
+                  </button>
+                </>
+              )}
             </div>
           )}
           {!!currentPageData.length && (
@@ -143,13 +174,6 @@ export const ResultTable: FC<{
                   </th>
                   <th>
                     <TableSortButton
-                      title="Gender"
-                      dir={sorts.gender?.dir}
-                      onSort={() => sortBy('gender')}
-                    />
-                  </th>
-                  <th>
-                    <TableSortButton
                       title="Nationality"
                       dir={sorts.natFull?.dir}
                       onSort={() => sortBy('natFull')}
@@ -178,7 +202,28 @@ export const ResultTable: FC<{
                       key={item.firstName + '-' + item.lastName + '-' + item.date + '-' + item.race}
                     >
                       <td className="whitespace-nowrap">{item.rankResultAllTime}</td>
-                      <td className="whitespace-nowrap">{item.yards}</td>
+                      <td className="whitespace-nowrap">
+                        <div className="flex flex-row justify-between gap-2">
+                          <span>{item.yards}</span>
+                          <span className="flex gap-1">
+                            {item.seasonBests.map((year) => {
+                              if (!year) return;
+                              return (
+                                <span
+                                  key={year}
+                                  className="tooltip text-accent font-bold"
+                                  data-tip={`Best towards Big's ${year}`}
+                                >
+                                  {`${year}`.substring(2)}
+                                </span>
+                              );
+                            })}
+                            <span className="tooltip" data-tip="Personal best">
+                              {item.isPersonalBest && '🏅'}
+                            </span>
+                          </span>
+                        </div>
+                      </td>
                       <td className="whitespace-nowrap">
                         {(item.eventPlace === 'W'
                           ? 'Win'
@@ -188,18 +233,10 @@ export const ResultTable: FC<{
                       </td>
                       <td className="whitespace-nowrap">
                         <button
-                          className="link"
+                          className={`link ${item.gender === 'F' && 'text-primary'}`}
                           onClick={() => addSearchFilter('personId', item.personId)}
                         >
                           {item.name}
-                        </button>
-                      </td>
-                      <td className="whitespace-nowrap">
-                        <button
-                          className="link"
-                          onClick={() => addSearchFilter('gender', item.gender)}
-                        >
-                          {item.gender}
                         </button>
                       </td>
                       <td className="whitespace-nowrap">
