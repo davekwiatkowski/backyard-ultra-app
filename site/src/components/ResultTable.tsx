@@ -14,7 +14,6 @@ export const ResultTable: FC<{
 }> = ({ data }) => {
   const [currentData, setCurrentData] = useState(data);
   const [currentPageData, setCurrentPageData] = useState(data.slice(0, MAX_ITEMS_PER_PAGE));
-  const [showPBsOnly, setShowPBsOnly] = useState(false);
 
   const {
     searchFilters,
@@ -27,6 +26,7 @@ export const ResultTable: FC<{
     clearSorting,
     clearSearchFilters,
     clearSearchText,
+    removeSearchFilter,
   } = useContext(ResultsContext);
 
   const maxPage = useMemo(() => Math.ceil(currentData.length / MAX_ITEMS_PER_PAGE), [currentData]);
@@ -46,10 +46,12 @@ export const ResultTable: FC<{
     clearSearchFilters();
   }, [clearSearchFilters, clearSearchText]);
 
+  const isPBsOnly = useMemo(() => {
+    return !!searchFilters.isPersonalBest && Boolean(searchFilters.isPersonalBest[0]);
+  }, [searchFilters.isPersonalBest]);
+
   useEffect(() => {
-    const newCurrentData = [...searchObjectArray(data, searchText, searchFilters)].filter(
-      (value) => !showPBsOnly || value.isPersonalBest,
-    );
+    const newCurrentData = [...searchObjectArray(data, searchText, searchFilters)];
     const sortsArray = Object.entries(sorts) as [
       keyof IResultItem,
       { dir: SortDirection; priority: number },
@@ -74,7 +76,7 @@ export const ResultTable: FC<{
         });
       });
     setCurrentData(newCurrentData);
-  }, [data, searchFilters, searchText, showPBsOnly, sorts]);
+  }, [data, searchFilters, searchText, sorts]);
 
   useEffect(() => {
     setCurrentPageData(
@@ -98,13 +100,17 @@ export const ResultTable: FC<{
           </button>
           <div className="form-control">
             <label className="label cursor-pointer gap-2">
-              <span className="label-text">{showPBsOnly ? 'Only PBs' : 'All results'}</span>
+              <span className="label-text">{isPBsOnly ? 'Only PBs' : 'All results'}</span>
               <input
                 type="checkbox"
                 className="toggle"
-                checked={showPBsOnly}
+                checked={isPBsOnly}
                 onChange={() => {
-                  setShowPBsOnly(!showPBsOnly);
+                  if (isPBsOnly) {
+                    removeSearchFilter('isPersonalBest');
+                  } else {
+                    addSearchFilter('isPersonalBest', 'true');
+                  }
                 }}
               />
             </label>
@@ -141,7 +147,7 @@ export const ResultTable: FC<{
             </div>
           )}
           {!!currentPageData.length && (
-            <table className="table table-xs sm:table-sm md:table-md">
+            <table className="table table-xs lg:table-sm">
               <thead>
                 <tr>
                   <th>
@@ -211,9 +217,17 @@ export const ResultTable: FC<{
                                 </span>
                               );
                             })}
-                            <span className="tooltip" data-tip="Personal best">
-                              {item.isPersonalBest && '🏅'}
-                            </span>
+                            {item.isPersonalBest && (
+                              <button
+                                className="btn btn-ghost btn-circle btn-xs tooltip"
+                                data-tip="Personal best"
+                                onClick={() =>
+                                  addSearchFilter('isPersonalBest', `${item.isPersonalBest}`)
+                                }
+                              >
+                                {item.isPersonalBest && '🏅'}
+                              </button>
+                            )}
                           </span>
                         </div>
                       </td>
@@ -227,7 +241,7 @@ export const ResultTable: FC<{
                       <td className="whitespace-nowrap">
                         <button
                           onClick={() => addSearchFilter('nat2', item.nat2)}
-                          className="tooltip btn btn-xs btn-ghost btn-circle"
+                          className="tooltip btn btn-xs btn-ghost btn-circle mr-1"
                           data-tip={item.natFull}
                         >
                           {getFlagEmoji(item.nat2)}
@@ -242,7 +256,7 @@ export const ResultTable: FC<{
                       <td className="whitespace-nowrap">
                         <button
                           onClick={() => addSearchFilter('eventNat2', item.eventNat2)}
-                          className="tooltip btn btn-xs btn-ghost btn-circle"
+                          className="tooltip btn btn-xs btn-ghost btn-circle mr-1"
                           data-tip={item.eventNatFull}
                         >
                           {getFlagEmoji(item.eventNat2)}
