@@ -67,16 +67,19 @@ export const ResultTable: FC<{
     return 'all';
   }, [searchFilters]);
 
-  const onSeasonSelectorChange: ChangeEventHandler<HTMLSelectElement> = useCallback((e) => {
-    const selected = e.currentTarget.value;
-    if (selected === 'personal-bests') {
-      replaceSearchFilters('isPersonalBest', 'true', ['seasonBests']);
-    } else if (seasons.includes(parseInt(selected))) {
-      replaceSearchFilters('seasonBests', selected, ['seasonBests', 'isPersonalBest']);
-    } else {
-      removeSearchFilters(['isPersonalBest', 'seasonBests']);
-    }
-  }, []);
+  const onSeasonSelectorChange: ChangeEventHandler<HTMLSelectElement> = useCallback(
+    (e) => {
+      const selected = e.currentTarget.value;
+      if (selected === 'personal-bests') {
+        replaceSearchFilters('isPersonalBest', 'true', ['seasonBests']);
+      } else if (seasons.includes(parseInt(selected))) {
+        replaceSearchFilters('seasonBests', selected, ['seasonBests', 'isPersonalBest']);
+      } else {
+        removeSearchFilters(['isPersonalBest', 'seasonBests']);
+      }
+    },
+    [removeSearchFilters, replaceSearchFilters, seasons],
+  );
 
   useEffect(() => {
     const newCurrentData = [...searchObjectArray(data, searchText, searchFilters)];
