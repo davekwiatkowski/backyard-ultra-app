@@ -39,6 +39,7 @@ class ResultsColumn:
     IS_PERSONAL_BEST = "isPersonalBest"
     SEASON_BESTS = "seasonBests"
     EVENT_NAT3 = "eventNat3"
+    EVENT_NAT_FULL = "eventNatFull"
 
 
 RESULTS_COLUMNS_TO_RENAME = {
@@ -60,7 +61,6 @@ RESULTS_COLUMNS_TO_RENAME = {
     "Distance": "eventDistance",
     "Finishers": "eventFinishers",
     "IAU-Label": "iauLabel",
-    "Unnamed: 6": "unnamed6",
 }
 
 RESULTS_COLUMNS_TO_DROP = [
@@ -73,7 +73,6 @@ RESULTS_COLUMNS_TO_DROP = [
     "eventDistance",
     "eventFinishers",
     "iauLabel",
-    "unnamed6",
 ]
 
 RESULTS_COLUMNS_TO_SORT_BY = [

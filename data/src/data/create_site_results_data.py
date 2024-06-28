@@ -19,6 +19,7 @@ from src.data.util.convert_backyard_race import convert_backyard_race
 from src.data.util.convert_nat3 import convert_nat3
 from src.data.util.convert_person_name import convert_person_name
 from src.data.util.convert_yards import convert_yards
+from src.data.util.drop_unnamed_columns import drop_unnamed_columns
 from src.util.create_json_file import create_json_file
 
 
@@ -31,6 +32,7 @@ def create_site_results_data():
     event_list_df = pandas.read_csv(EVENT_LIST_FILE_PATH)
     df = pandas.merge(df, event_list_df, on=OriginalResultsColumn.EVENT_ID, how="outer")
 
+    df = drop_unnamed_columns(df)
     df = df.rename(columns=RESULTS_COLUMNS_TO_RENAME)
     df = df.drop(columns=RESULTS_COLUMNS_TO_DROP)
     df = df[df[ResultsColumn.FULL_NAME].notnull()]
