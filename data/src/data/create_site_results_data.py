@@ -31,36 +31,31 @@ def create_site_results_data():
     event_list_df = pandas.read_csv(EVENT_LIST_FILE_PATH)
     df = pandas.merge(df, event_list_df, on=OriginalResultsColumn.EVENT_ID, how="outer")
 
-    # Clean up
     df = df.rename(columns=RESULTS_COLUMNS_TO_RENAME)
     df = df.drop(columns=RESULTS_COLUMNS_TO_DROP)
     df = df[df[ResultsColumn.FULL_NAME].notnull()]
     df = df[df[ResultsColumn.DATE].notnull()]
     df = df.drop_duplicates()
 
-    # Convert existing fields
     convert_backyard_race(df)
     convert_nat3(df, ResultsColumn.NAT3)
     convert_nat3(df, ResultsColumn.EVENT_NAT3)
     convert_person_name(df)
-    convert_yards(df)
+    df = convert_yards(df)
     df[ResultsColumn.DATE] = df[ResultsColumn.DATE].apply(
         lambda x: convert_backyard_date(x)
     )
 
     add_ranks(df)
 
-    # Bests
     df = add_personal_best(df)
     df = add_season_bests(df)
 
-    # Sort
     df = df.sort_values(
         by=RESULTS_COLUMNS_TO_SORT_BY,
         ascending=[False, False, True, True],
     )
 
-    # Finish
     create_json_file(df, "results")
     print(f"Finished creating site results data in {(time() - start_time)} seconds.")
     return df

@@ -12,3 +12,4 @@ def convert_yards(df: DataFrame):
     )
     pandas.set_option("display.max_rows", df.shape[0] + 1)
     df = df.drop(columns=[ResultsColumn.DISTANCE])
+    return df

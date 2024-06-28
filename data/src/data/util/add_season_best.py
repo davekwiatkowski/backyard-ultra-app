@@ -8,14 +8,14 @@ from src.util.create_json_file_from_data import create_json_file_from_data
 
 
 def add_season_bests(df: DataFrame):
-    dates = pandas.to_datetime(df[ResultsColumn.DATE], format="%Y-%m-%d")
+    dates = pandas.to_datetime(df[ResultsColumn.DATE], format="%Y/%m/%d")
     min_date = dates.min()
     max_date = dates.max() + pandas.Timedelta(days=365 * 2)
     min_year = min_date.year
     max_year = max_date.year
-    if max_date < datetime.strptime(f"{max_year}-08-16", "%Y-%m-%d"):
+    if max_date < datetime.strptime(f"{max_year}/08/16", "%Y/%m/%d"):
         max_year -= 1
-    if min_date > datetime.strptime(f"{min_year}-08-16", "%Y-%m-%d"):
+    if min_date > datetime.strptime(f"{min_year}/08/16", "%Y/%m/%d"):
         min_year += 1
 
     columns = []
@@ -24,7 +24,7 @@ def add_season_bests(df: DataFrame):
         print(f"Adding season best for year: {year}")
         column_name = f"isSeasonBest{year}"
         df = add_personal_best(
-            df, f"{year - 2}-08-16", f"{year}-08-15", column_name, year
+            df, f"{year - 2}/08/16", f"{year}/08/15", column_name, year
         )
         columns.append(column_name)
         seasons.append(year)
