@@ -1,6 +1,6 @@
 import glob
 import os
-import time
+from time import time
 
 import pandas
 from src.constants.project_constants import BUILD_FOLDER, EVENT_LIST_FILE_PATH
@@ -19,12 +19,12 @@ from src.data.util.convert_backyard_race import convert_backyard_race
 from src.data.util.convert_nat3 import convert_nat3
 from src.data.util.convert_person_name import convert_person_name
 from src.data.util.convert_yards import convert_yards
-from src.data.util.create_json_file import create_json_file
+from src.util.create_json_file import create_json_file
 
 
 def create_site_results_data():
     print("Creating site results data...")
-    start_time = time.time()
+    start_time = time()
     joined_files = os.path.join(f"{BUILD_FOLDER}/events", "*.csv")
     joined_list = glob.glob(joined_files)
     df = pandas.concat(map(pandas.read_csv, joined_list), ignore_index=True)
@@ -62,7 +62,5 @@ def create_site_results_data():
 
     # Finish
     create_json_file(df, "results")
-    print(
-        f"Finished creating site results data in {(time.time() - start_time)} seconds."
-    )
+    print(f"Finished creating site results data in {(time() - start_time)} seconds.")
     return df

@@ -1,7 +1,7 @@
 import json
 from time import time
 
-from src.data.util.create_json_file_from_data import create_json_file_from_data
+from src.util.create_json_file_from_data import create_json_file_from_data
 
 
 def create_site_metadata():

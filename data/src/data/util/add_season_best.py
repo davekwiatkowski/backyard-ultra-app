@@ -4,7 +4,7 @@ import pandas
 from pandas import DataFrame
 from src.constants.results_columns import ResultsColumn
 from src.data.util.add_personal_best import add_personal_best
-from src.data.util.create_json_file_from_data import create_json_file_from_data
+from src.util.create_json_file_from_data import create_json_file_from_data
 
 
 def add_season_bests(df: DataFrame):
