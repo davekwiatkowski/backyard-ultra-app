@@ -4,6 +4,7 @@ from src.data.create_site_metadata import create_site_metadata
 from src.data.create_site_results_data import create_site_results_data
 from src.scraping.scrape_event_list import scrape_event_list
 from src.scraping.scrape_results_for_events import scrape_results_for_events
+from src.scraping.scrapte_event_tickets import scrape_event_tickets
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
@@ -15,6 +16,7 @@ if __name__ == "__main__":
     config = vars(args)
     print(f"config: {config}")
     if config["scrape"]:
+        scrape_event_tickets()
         scrape_event_list()
         scrape_results_for_events()
 
