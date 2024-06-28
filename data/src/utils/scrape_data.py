@@ -12,7 +12,7 @@ from urllib.parse import urlparse
 from urllib.parse import parse_qs
 
 from src.utils.get_root import get_root
-from data.src.utils.decode_string import decode_string
+from src.utils.decode_string import decode_string
 from src.constants.project_constants import (
     BUILD_FOLDER, 
     EVENT_LIST_FILE_PATH, 
