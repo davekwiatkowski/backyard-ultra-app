@@ -1,9 +1,10 @@
 import csv
 import os
 import time
+import warnings
 from urllib.parse import parse_qs, urlparse
 
-from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
@@ -23,9 +24,15 @@ def scrape_event_list():
             f"{EVENTS_URL}?year=all&dist=all&country=all&surface=Backy&sort=1&page={page}"
         )
 
-        table = WebDriverWait(driver, WAIT_TIME).until(
-            EC.visibility_of_element_located((By.ID, "Resultlist"))
-        )
+        try:
+            table = WebDriverWait(driver, WAIT_TIME).until(
+                EC.visibility_of_element_located((By.ID, "Resultlist"))
+            )
+        except TimeoutException:
+            warnings.warn(
+                f"[scrape_results_for_event] Failed to get table after {WAIT_TIME} seconds... failing silently."
+            )
+            break
 
         os.makedirs(os.path.dirname(EVENT_LIST_FILE_PATH), exist_ok=True)
         with open(
