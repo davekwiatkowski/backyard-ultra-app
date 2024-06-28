@@ -11,19 +11,19 @@ from src.constants.results_columns import (
     OriginalResultsColumn,
     ResultsColumn,
 )
-from src.utils.add_personal_best import add_personal_best
-from src.utils.add_ranks import add_ranks
-from src.utils.add_season_best import add_season_bests
-from src.utils.convert_backyard_date import convert_backyard_date
-from src.utils.convert_backyard_race import convert_backyard_race
-from src.utils.convert_nat3 import convert_nat3
-from src.utils.convert_person_name import convert_person_name
-from src.utils.convert_yards import convert_yards
-from src.utils.create_json_file import create_json_file
+from src.data.util.add_personal_best import add_personal_best
+from src.data.util.add_ranks import add_ranks
+from src.data.util.add_season_best import add_season_bests
+from src.data.util.convert_backyard_date import convert_backyard_date
+from src.data.util.convert_backyard_race import convert_backyard_race
+from src.data.util.convert_nat3 import convert_nat3
+from src.data.util.convert_person_name import convert_person_name
+from src.data.util.convert_yards import convert_yards
+from src.data.util.create_json_file import create_json_file
 
 
-def create_site_data():
-    print("Creating merged json file...")
+def create_site_results_data():
+    print("Creating site results data...")
     start_time = time.time()
     joined_files = os.path.join(f"{BUILD_FOLDER}/events", "*.csv")
     joined_list = glob.glob(joined_files)
@@ -63,6 +63,6 @@ def create_site_data():
     # Finish
     create_json_file(df, "results")
     print(
-        f"Finished creating merged JSON file in {(time.time() - start_time)} seconds."
+        f"Finished creating site results data in {(time.time() - start_time)} seconds."
     )
     return df

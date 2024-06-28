@@ -22,9 +22,8 @@ export const Statistics: FC<{
           <button
             className="link link-primary"
             onClick={() => addSearchFilter('date', mostRecentDate)}
-            suppressHydrationWarning
           >
-            {new Date(mostRecentDate).toLocaleDateString(undefined, { dateStyle: 'medium' })}
+            {mostRecentDate}
           </button>
         </div>
       </div>

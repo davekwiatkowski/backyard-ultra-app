@@ -4,8 +4,8 @@ from concurrent.futures import ThreadPoolExecutor
 import pandas
 from src.constants.project_constants import EVENT_LIST_FILE_PATH
 from src.constants.results_columns import OriginalResultsColumn
-from src.utils.scrape_results_for_event import scrape_results_for_event
-from src.utils.should_skip_event_result import should_skip_event_result
+from src.scraping.scrape_results_for_event import scrape_results_for_event
+from src.scraping.util.should_skip_event_result import should_skip_event_result
 
 
 def scrape_results_for_events(limit=None):

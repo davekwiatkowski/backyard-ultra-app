@@ -1,6 +1,6 @@
 from pandas import DataFrame
 from src.constants.results_columns import ResultsColumn
-from src.utils.name import convert_full_name, get_first_name, get_last_name
+from src.data.util.name import convert_full_name, get_first_name, get_last_name
 
 
 def convert_person_name(df: DataFrame):

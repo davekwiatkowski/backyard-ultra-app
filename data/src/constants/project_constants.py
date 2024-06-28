@@ -1,4 +1,4 @@
-from src.utils.decode_string import decode_string
+from src.util.decode_string import decode_string
 
 BUILD_FOLDER = "build"
 EVENT_LIST_FILE_NAME = "event_list"

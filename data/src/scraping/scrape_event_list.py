@@ -10,7 +10,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 from src.constants.project_constants import EVENT_LIST_FILE_PATH, EVENTS_URL, WAIT_TIME
 from src.constants.results_columns import OriginalResultsColumn
-from src.utils.create_webdriver import create_webdriver
+from src.scraping.util.create_webdriver import create_webdriver
 
 
 def scrape_event_list():
@@ -28,11 +28,11 @@ def scrape_event_list():
             table = WebDriverWait(driver, WAIT_TIME).until(
                 EC.visibility_of_element_located((By.ID, "Resultlist"))
             )
-        except TimeoutException:
+        except TimeoutException as e:
             warnings.warn(
-                f"[scrape_results_for_event] Failed to get table after {WAIT_TIME} seconds... failing silently."
+                f"[scrape_results_for_event] Failed to get table after {WAIT_TIME} seconds. The site is probably down."
             )
-            break
+            raise e
 
         os.makedirs(os.path.dirname(EVENT_LIST_FILE_PATH), exist_ok=True)
         with open(

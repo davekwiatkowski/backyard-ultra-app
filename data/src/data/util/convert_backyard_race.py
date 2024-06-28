@@ -12,7 +12,7 @@ def get_backyard_race_pieces(race: str):
         race = re.sub(regex, "\\1", race)
         return (race, nation)
     except:
-        raise Exception(f"[convert_backyard_race] Failed with race: {original_race}")
+        raise Exception(f"[get_backyard_race_pieces] Failed with race: {original_race}")
 
 
 def convert_backyard_race(df: DataFrame):

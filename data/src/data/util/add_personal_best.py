@@ -2,10 +2,7 @@ import numpy
 import pandas
 from pandas import DataFrame
 from src.constants.results_columns import ResultsColumn
-
-
-def get_max_yards(group):
-    return group.loc[group[ResultsColumn.YARDS].idxmax()]
+from src.data.util.get_max_yards import get_max_yards
 
 
 def add_personal_best(

@@ -310,14 +310,8 @@ export const ResultTable: FC<{
                         </button>
                       </td>
                       <td className="whitespace-nowrap">
-                        <button
-                          className="link"
-                          onClick={() => addSearchFilter('date', item.date)}
-                          suppressHydrationWarning
-                        >
-                          {new Date(item.date).toLocaleDateString(undefined, {
-                            dateStyle: 'medium',
-                          })}
+                        <button className="link" onClick={() => addSearchFilter('date', item.date)}>
+                          {item.date}
                         </button>
                       </td>
                     </tr>

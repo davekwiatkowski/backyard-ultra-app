@@ -8,9 +8,9 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 from src.constants.project_constants import RESULTS_URL, WAIT_TIME
 from src.constants.results_columns import RESULTS_HEADERS
-from src.utils.create_webdriver import create_webdriver
-from src.utils.get_event_file_path import get_event_file_path
-from src.utils.should_skip_event_result import should_skip_event_result
+from src.scraping.util.create_webdriver import create_webdriver
+from src.scraping.util.get_event_file_path import get_event_file_path
+from src.scraping.util.should_skip_event_result import should_skip_event_result
 
 
 def scrape_results_for_event(event_id):
@@ -27,11 +27,11 @@ def scrape_results_for_event(event_id):
         table = WebDriverWait(driver, WAIT_TIME).until(
             EC.visibility_of_element_located((By.ID, "Resultlist"))
         )
-    except TimeoutException:
+    except TimeoutException as e:
         warnings.warn(
-            f"[scrape_results_for_event] Failed to get table after {WAIT_TIME} seconds... failing silently."
+            f"[scrape_results_for_event] Failed to get table after {WAIT_TIME} seconds. The site is probably down."
         )
-        return
+        raise e
 
     event_file_path = get_event_file_path(event_id)
     os.makedirs(os.path.dirname(event_file_path), exist_ok=True)

@@ -1,6 +1,6 @@
 from selenium import webdriver
 from src.constants.project_constants import BUILD_FOLDER
-from src.utils.get_root import get_root
+from src.util.get_root import get_root
 
 
 def create_webdriver():
