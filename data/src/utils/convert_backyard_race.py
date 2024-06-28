@@ -1,6 +1,7 @@
 import re
 
 from pandas import DataFrame
+from src.constants.results_columns import ResultsColumn
 
 
 def get_backyard_race_pieces(race: str):
@@ -15,6 +16,10 @@ def get_backyard_race_pieces(race: str):
 
 
 def convert_backyard_race(df: DataFrame):
-    original_race = df["race"]
-    df["race"] = original_race.apply(lambda x: get_backyard_race_pieces(x)[0])
-    df["eventNat3"] = original_race.apply(lambda x: get_backyard_race_pieces(x)[1])
+    original_race = df[ResultsColumn.EVENT_NAME]
+    df[ResultsColumn.EVENT_NAME] = original_race.apply(
+        lambda x: get_backyard_race_pieces(x)[0]
+    )
+    df[ResultsColumn.EVENT_NAT3] = original_race.apply(
+        lambda x: get_backyard_race_pieces(x)[1]
+    )

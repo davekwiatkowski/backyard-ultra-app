@@ -3,11 +3,10 @@ import pandas
 from pandas import DataFrame
 
 
-def convert_nat3(df: DataFrame, nat_col_prefix: str):
-    nat3_col = f"{nat_col_prefix}3"
-    nat2_col = f"{nat_col_prefix}2"
-    nat_full_col = f"{nat_col_prefix}Full"
-
+def convert_nat3(df: DataFrame, nat3_col: str):
+    prefix = nat3_col[:-1]
+    nat2_col = f"{prefix}2"
+    nat_full_col = f"{prefix}Full"
     cc = coco.CountryConverter()
     iso3_nat3s = ["GRL", "MAC"]
     ioc_nat3 = df[~df[nat3_col].isin(iso3_nat3s)][nat3_col].dropna()
@@ -18,5 +17,4 @@ def convert_nat3(df: DataFrame, nat_col_prefix: str):
     df[nat_full_col] = cc.pandas_convert(
         series=df[nat2_col].dropna(), to="name_short", src="ISO2"
     )
-
     return df

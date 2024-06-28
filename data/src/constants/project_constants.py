@@ -1,3 +1,5 @@
+from src.utils.decode_string import decode_string
+
 BUILD_FOLDER = "build"
 EVENT_LIST_FILE_NAME = "event_list"
 EVENT_LIST_FILE_PATH = f"{BUILD_FOLDER}/{EVENT_LIST_FILE_NAME}.csv"
@@ -9,18 +11,5 @@ RESULTS_URL_ENCODED = (
 )
 EVENTS_URL_ENCODED = b"aHR0cHM6Ly9zdGF0aXN0aWsuZC11LXYub3JnL2dldGV2ZW50bGlzdC5waHA="
 
-RESULTS_HEADERS = [
-    "EventId",
-    "Rank",
-    "Performance",
-    "Surname, first name",
-    "Club",
-    "Nat.",
-    "YOB",
-    "M/F",
-    "Rank M/F",
-    "Cat",
-    "Cat. Rank",
-    "hours",
-    "Age graded performance",
-]
+RESULTS_URL = decode_string(RESULTS_URL_ENCODED)
+EVENTS_URL = decode_string(EVENTS_URL_ENCODED)

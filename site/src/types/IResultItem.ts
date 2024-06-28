@@ -7,7 +7,6 @@ export interface IResultItem {
   firstName: string;
   lastName: string;
   // person details
-  club: string;
   gender: string;
   personId: string;
   // bests
