@@ -1,6 +1,14 @@
 'use client';
 
-import { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import {
+  ChangeEventHandler,
+  FC,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { MAX_ITEMS_PER_PAGE } from '../constants/TableConstants';
 import { searchObjectArray } from '../util/searchObjectArray';
 import { IResultItem } from '../types/IResultItem';
@@ -16,11 +24,11 @@ export const ResultTable: FC<{
   const {
     searchFilters,
     searchText,
-    addSearchFilter,
     page,
-    setPage,
     sorts,
+    addSearchFilter,
     sortBy,
+    setPage,
     clearSorting,
     clearSearchFilters,
     clearSearchText,
@@ -58,6 +66,17 @@ export const ResultTable: FC<{
     }
     return 'all';
   }, [searchFilters]);
+
+  const onSeasonSelectorChange: ChangeEventHandler<HTMLSelectElement> = useCallback((e) => {
+    const selected = e.currentTarget.value;
+    if (selected === 'personal-bests') {
+      replaceSearchFilters('isPersonalBest', 'true', ['seasonBests']);
+    } else if (seasons.includes(parseInt(selected))) {
+      replaceSearchFilters('seasonBests', selected, ['seasonBests', 'isPersonalBest']);
+    } else {
+      removeSearchFilters(['isPersonalBest', 'seasonBests']);
+    }
+  }, []);
 
   useEffect(() => {
     const newCurrentData = [...searchObjectArray(data, searchText, searchFilters)];
@@ -100,24 +119,17 @@ export const ResultTable: FC<{
           <select
             value={seasonSelectorValue}
             className="select select-bordered w-fit max-w-xs select-sm"
-            onChange={(e) => {
-              const selected = e.currentTarget.value;
-              if (selected === 'personal-bests') {
-                replaceSearchFilters('isPersonalBest', 'true', ['seasonBests']);
-              } else if (seasons.includes(parseInt(selected))) {
-                replaceSearchFilters('seasonBests', selected, ['seasonBests', 'isPersonalBest']);
-              } else {
-                removeSearchFilters(['isPersonalBest', 'seasonBests']);
-              }
-            }}
+            onChange={onSeasonSelectorChange}
           >
             <option value="all">All results</option>
             <option value="personal-bests">Personal bests</option>
-            {seasons.map((season) => (
-              <option value={season} key={season}>
-                {`Towards Big's ${season}`}
-              </option>
-            ))}
+            {seasons
+              .sort((a, b) => b - a)
+              .map((season) => (
+                <option value={season} key={season}>
+                  {`${season - 2}-${season} bests`}
+                </option>
+              ))}
           </select>
           <button
             className="btn btn-xs btn-outline"
@@ -214,10 +226,9 @@ export const ResultTable: FC<{
                     <tr
                       key={item.firstName + '-' + item.lastName + '-' + item.date + '-' + item.race}
                     >
-                      <td className="whitespace-nowrap">{item.rankResultAllTime}</td>
                       <td className="whitespace-nowrap">
                         <div className="flex flex-row justify-between gap-1 items-center">
-                          <span>{item.yards}</span>
+                          {item.rankResultAllTime.toLocaleString()}
                           <span className="flex gap-1">
                             {item.seasonBests.map((year) => {
                               if (!year) return;
@@ -231,7 +242,7 @@ export const ResultTable: FC<{
                                     ]);
                                   }}
                                   className="btn btn-ghost btn-circle btn-xs tooltip text-accent font-bold"
-                                  data-tip={`Best towards Big's ${year}`}
+                                  data-tip={`${year - 2}-${year} best`}
                                 >
                                   {`${year}`.substring(2)}
                                 </button>
@@ -251,6 +262,11 @@ export const ResultTable: FC<{
                               </button>
                             )}
                           </span>
+                        </div>
+                      </td>
+                      <td className="whitespace-nowrap">
+                        <div className="flex flex-row justify-between gap-1 items-center">
+                          <span>{item.yards}</span>
                         </div>
                       </td>
                       <td className="whitespace-nowrap">
@@ -309,30 +325,40 @@ export const ResultTable: FC<{
           )}
         </div>
       </div>
-      <div className="p-4 flex flex-row items-center justify-between">
+      <div className="p-4 flex flex-row items-center justify-between flex-wrap gap-4">
         <div className="flex flex-col gap-4 pt-4">
-          <div className="join grid grid-cols-2 w-fit">
-            <button
-              className="join-item btn btn-outline"
-              disabled={page - 1 < 0}
-              onClick={handlePrevious}
-            >
-              Previous
-            </button>
-            <button
-              className="join-item btn btn-outline"
-              disabled={page + 1 >= maxPage}
-              onClick={handleNext}
-            >
-              Next
-            </button>
-          </div>
-          <div className="flex text-xs items-center justify-center">
-            Page {page + 1} / {maxPage}
+          <div className="flex flex-row gap-4 ">
+            <div className="flex flex-col gap-2">
+              <div className="join grid grid-cols-2 w-fit">
+                <button
+                  className="join-item btn btn-outline"
+                  disabled={page - 1 < 0}
+                  onClick={handlePrevious}
+                >
+                  Previous
+                </button>
+                <button
+                  className="join-item btn btn-outline"
+                  disabled={page + 1 >= maxPage}
+                  onClick={handleNext}
+                >
+                  Next
+                </button>
+              </div>
+              <div className="flex text-xs items-center justify-center">
+                Page {page + 1} / {maxPage.toLocaleString()}
+              </div>
+            </div>
+            {page > 0 && (
+              <button className="btn btn-square" onClick={() => setPage(0)}>
+                Go to start
+              </button>
+            )}
           </div>
         </div>
-        <div className="flex-0 p-4 flex italic flex-col gap-2 text-xs">
+        <div className="flex-0 flex italic flex-col gap-2 text-xs">
           Showing {MAX_ITEMS_PER_PAGE} per page
+          <span>Out of {currentData.length.toLocaleString()} results</span>
         </div>
       </div>
     </div>

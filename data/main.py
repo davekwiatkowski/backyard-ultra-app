@@ -1,7 +1,6 @@
 from time import time
 import argparse
 import json
-from pandas import DataFrame
 
 from src.utils.create_json_file import create_json_file_from_data
 from src.utils.create_site_data import create_site_data

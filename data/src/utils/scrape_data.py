@@ -11,10 +11,21 @@ import time
 from urllib.parse import urlparse
 from urllib.parse import parse_qs
 
-from src.constants.project_constants import BUILD_FOLDER, EVENT_LIST_FILE_PATH, WAIT_TIME
 from src.utils.get_root import get_root
+from data.src.utils.decode_string import decode_string
+from src.constants.project_constants import (
+    BUILD_FOLDER, 
+    EVENT_LIST_FILE_PATH, 
+    EVENTS_URL_ENCODED,
+    RESULTS_HEADERS, 
+    RESULTS_URL_ENCODED,
+    WAIT_TIME,
+)
 
 from pathlib import Path
+
+RESULTS_URL = decode_string(RESULTS_URL_ENCODED)
+EVENTS_URL = decode_string(EVENTS_URL_ENCODED)
 
 def create_driver():
     options = webdriver.ChromeOptions()
@@ -39,7 +50,7 @@ def write_results_for_event(event_id=83012):
         return
 
     print(f'Writing results for event {event_id}...')
-    driver.get(f'https://statistik.d-u-v.org/getresultevent.php?event={event_id}')
+    driver.get(f'{RESULTS_URL}?event={event_id}')
 
     table = WebDriverWait(driver, WAIT_TIME).until(EC.visibility_of_element_located((By.ID, "Resultlist")))
 
@@ -47,7 +58,7 @@ def write_results_for_event(event_id=83012):
     os.makedirs(os.path.dirname(event_file_path), exist_ok=True)
     with open(event_file_path, 'w', newline='') as csv_file:
         writer = csv.writer(csv_file)
-        writer.writerow(['EventId', 'Rank','Performance', "Surname, first name" , 'Club', 'Nat.', 'YOB','M/F','Rank M/F','Cat','Cat. Rank','hours','Age graded performance'])
+        writer.writerow(RESULTS_HEADERS)
         for tr in table.find_element(By.TAG_NAME, "tbody").find_elements(By.TAG_NAME, 'tr'):
             writer.writerow([event_id] + [td.text.strip() for td in tr.find_elements(By.TAG_NAME, 'td')])
 
@@ -81,7 +92,7 @@ def write_results_for_event_list():
     page = 1
     while True:
         print(f'Scraping page {page}...')
-        driver.get(f'https://statistik.d-u-v.org/geteventlist.php?year=all&dist=all&country=all&surface=Backy&sort=1&page={page}')
+        driver.get(f'{EVENTS_URL}?year=all&dist=all&country=all&surface=Backy&sort=1&page={page}')
 
         table = WebDriverWait(driver, WAIT_TIME).until(EC.visibility_of_element_located((By.ID, "Resultlist")))
         
