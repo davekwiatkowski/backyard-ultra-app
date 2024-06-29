@@ -16,13 +16,11 @@ import { getFlagEmoji } from '../util/getFlagEmoji';
 import { ResultsContext } from '../context/ResultsContext';
 import { TableSortButton } from './SortButton';
 import { SortDirection } from '../types/SortDirection';
-import { IEvent } from '../types/IEvent';
 
 export const ResultTable: FC<{
   data: IResultItem[];
   seasons: number[];
-  events: { [eventId: string]: IEvent[] | undefined };
-}> = ({ data, seasons, events }) => {
+}> = ({ data, seasons }) => {
   const {
     searchFilters,
     searchText,
@@ -73,9 +71,9 @@ export const ResultTable: FC<{
     (e) => {
       const selected = e.currentTarget.value;
       if (selected === 'personal-bests') {
-        replaceSearchFilters('isPersonalBest', 'true', ['seasonBests']);
+        replaceSearchFilters({ isPersonalBest: 'true' }, ['seasonBests']);
       } else if (seasons.includes(parseInt(selected))) {
-        replaceSearchFilters('seasonBests', selected, ['seasonBests', 'isPersonalBest']);
+        replaceSearchFilters({ seasonBests: selected }, ['seasonBests', 'isPersonalBest']);
       } else {
         removeSearchFilters(['isPersonalBest', 'seasonBests']);
       }
@@ -100,12 +98,14 @@ export const ResultTable: FC<{
             a = b;
             b = temp;
           }
-          if (!a[key]) return -1;
-          if (!b[key]) return 1;
-          if (typeof a[key] === 'number') {
-            return (a[key] as number) - (b[key] as number);
+          const aVal = a[key];
+          const bVal = b[key];
+          if (!aVal) return -1;
+          if (!bVal) return 1;
+          if (typeof aVal === 'number') {
+            return (aVal as number) - (bVal as number);
           }
-          return a[key].toString().localeCompare(b[key].toString());
+          return aVal.toString().localeCompare(bVal.toString());
         });
       });
     setCurrentData(newCurrentData);
@@ -241,7 +241,7 @@ export const ResultTable: FC<{
                                 <button
                                   key={year}
                                   onClick={() => {
-                                    replaceSearchFilters('seasonBests', `${year}`, [
+                                    replaceSearchFilters({ seasonBests: `${year}` }, [
                                       'isPersonalBest',
                                       'seasonBests',
                                     ]);
@@ -258,7 +258,7 @@ export const ResultTable: FC<{
                                 className="btn btn-ghost btn-circle btn-xs tooltip"
                                 data-tip="Personal best"
                                 onClick={() => {
-                                  replaceSearchFilters('isPersonalBest', `${true}`, [
+                                  replaceSearchFilters({ isPersonalBest: `${true}` }, [
                                     'seasonBests',
                                   ]);
                                 }}
@@ -280,14 +280,19 @@ export const ResultTable: FC<{
                           : item.eventPlace === 'A'
                             ? 'Assist'
                             : null) ?? `DNF (${item.eventRank})`}
-                        {item.eventPlace === 'W' && item.nat2 === item.eventNat2 && (
-                          <div
-                            className="tooltip ml-2 text-xs"
-                            data-tip={`${events[item.eventId]?.[0].ticketType} ticket${events[item.eventId]?.[0].raceQualifiedFor ? ` towards ${events[item.eventId]?.[0].raceQualifiedFor}` : ''}`}
+                        {item.awardWon && (
+                          <button
+                            className="tooltip btn btn-xs btn-ghost btn-circle ml-1"
+                            data-tip={`${item.awardWon}${item.raceQualifiedFor ? ` towards ${item.raceQualifiedFor}` : ''}`}
+                            onClick={() =>
+                              replaceSearchFilters({ awardWon: item.awardWon }, ['awardWon'])
+                            }
                           >
-                            {events[item.eventId]?.[0].ticketType === 'Silver' && '🥈'}
-                            {events[item.eventId]?.[0].ticketType === 'Bronze' && '🥉'}
-                          </div>
+                            {item.awardWon === 'Championship' && '🏆'}
+                            {item.awardWon === 'Gold' && '🥇'}
+                            {item.awardWon === 'Silver' && '🥈'}
+                            {item.awardWon === 'Bronze' && '🥉'}
+                          </button>
                         )}
                       </td>
                       <td className="whitespace-nowrap">
@@ -319,13 +324,20 @@ export const ResultTable: FC<{
                         >
                           {item.race}
                         </button>
-                        <div
-                          className="tooltip ml-2 text-xs"
-                          data-tip={`${events[item.eventId]?.[0].ticketType} ticket${events[item.eventId]?.[0].raceQualifiedFor ? ` towards ${events[item.eventId]?.[0].raceQualifiedFor}` : ''}`}
-                        >
-                          {events[item.eventId]?.[0].ticketType === 'Silver' && '🥈'}
-                          {events[item.eventId]?.[0].ticketType === 'Bronze' && '🥉'}
-                        </div>
+                        {item.eventAward && (
+                          <button
+                            className="tooltip btn btn-xs btn-ghost btn-circle ml-1"
+                            data-tip={`${item.eventAward}${item.raceQualifiedFor ? ` towards ${item.raceQualifiedFor}` : ''}`}
+                            onClick={() =>
+                              replaceSearchFilters({ eventAward: item.eventAward }, ['eventAward'])
+                            }
+                          >
+                            {item.eventAward === 'Championship' && '🏆'}
+                            {item.eventAward === 'Gold' && '🥇'}
+                            {item.eventAward === 'Silver' && '🥈'}
+                            {item.eventAward === 'Bronze' && '🥉'}
+                          </button>
+                        )}
                       </td>
                       <td className="whitespace-nowrap">
                         <button

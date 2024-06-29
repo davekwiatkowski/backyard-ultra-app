@@ -7,8 +7,6 @@ def create_events_from_results(results_df: DataFrame):
         [
             ResultsColumn.EVENT_ID,
             ResultsColumn.EVENT_NAME,
-            ResultsColumn.EVENT_NAT2,
-            ResultsColumn.EVENT_NAT3,
             ResultsColumn.EVENT_NAT_FULL,
             ResultsColumn.DATE,
         ]

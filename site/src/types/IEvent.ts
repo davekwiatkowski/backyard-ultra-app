@@ -1,6 +1,6 @@
 export interface IEvent {
   eventNatFull: string;
-  ticketType: string;
+  eventAward: string;
   race: string;
   date: string;
   raceQualifiedFor: string;

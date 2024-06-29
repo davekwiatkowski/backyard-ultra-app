@@ -25,7 +25,7 @@ def create_ticket_events_from_team_rosters():
         columns={
             "Country": TicketEventsColumn.EVENT_NAT_FULL,
             "#": "rosterRank",
-            "Status": TicketEventsColumn.TICKET_TYPE,
+            "Status": TicketEventsColumn.EVENT_AWARD,
             "Name": ResultsColumn.FULL_NAME,
             "W/A": ResultsColumn.EVENT_PLACE,
             "Yards": ResultsColumn.YARDS,
@@ -41,8 +41,8 @@ def create_ticket_events_from_team_rosters():
             ResultsColumn.YARDS,
         ]
     )
-    df = df[df[TicketEventsColumn.TICKET_TYPE] == "Silver Ticket"]
-    df[TicketEventsColumn.TICKET_TYPE] = "Silver"
+    df = df[df[TicketEventsColumn.EVENT_AWARD] == "Silver Ticket"]
+    df[TicketEventsColumn.EVENT_AWARD] = "Silver"
     df = df.drop_duplicates()
 
     df[TicketEventsColumn.DATE] = df[TicketEventsColumn.DATE].apply(

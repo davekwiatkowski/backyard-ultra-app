@@ -2,7 +2,6 @@ import { promises as fs } from 'fs';
 import { IResultItem } from '../types/IResultItem';
 import { Client } from '../components/Client';
 import { IMetadata } from '../types/IMetadata';
-import { IEvent } from '../types/IEvent';
 
 export default async function Landing() {
   const resultsDataFile = await fs.readFile(process.cwd() + '/src/data/results.json', 'utf8');
@@ -13,9 +12,6 @@ export default async function Landing() {
 
   const seasonsFile = await fs.readFile(process.cwd() + '/src/data/seasons.json', 'utf8');
   const seasons: number[] = JSON.parse(seasonsFile);
-
-  const eventsFile = await fs.readFile(process.cwd() + '/src/data/events.json', 'utf8');
-  const events: { [eventId: string]: IEvent[] | undefined } = JSON.parse(eventsFile);
 
   const mostRecentDate = resultsData.map((v) => v['date']).sort((a, b) => b.localeCompare(a))[0];
   const recentRanks = resultsData.filter((v) => v.date === mostRecentDate);
@@ -39,7 +35,6 @@ export default async function Landing() {
       mostRecentDate={mostRecentDate}
       countriesCount={countries.length}
       seasons={seasons}
-      events={events}
     />
   );
 }

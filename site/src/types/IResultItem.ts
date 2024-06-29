@@ -1,6 +1,5 @@
 export interface IResultItem {
   yards: number;
-  date: string;
   rankResultAllTime: number;
   // person name
   name: string;
@@ -25,4 +24,11 @@ export interface IResultItem {
   eventNat2: string;
   eventNat3: string;
   eventNatFull: string;
+  // tickets
+  eventAward: 'Bronze' | 'Silver' | 'Gold' | 'Championship' | null;
+  awardWon: 'Bronze' | 'Silver' | 'Gold' | 'Championship' | null;
+  raceQualifiedFor: string;
+  // time
+  date: string;
+  season: string;
 }

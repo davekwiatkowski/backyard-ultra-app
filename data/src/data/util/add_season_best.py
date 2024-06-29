@@ -22,6 +22,9 @@ def add_season_bests(df: DataFrame):
     seasons = []
     for year in range(min_year, max_year + 1):
         print(f"Adding season best for year: {year}")
+
+        # TODO: Add season to results
+
         column_name = f"isSeasonBest{year}"
         df = add_personal_best(
             df, f"{year - 2}/08/16", f"{year}/08/15", column_name, year

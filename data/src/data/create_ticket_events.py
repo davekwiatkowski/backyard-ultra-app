@@ -32,10 +32,8 @@ def create_ticket_events(
     df[TicketEventsColumn.DATE] = df[TicketEventsColumn.DATE].apply(
         convert_ticket_events_date
     )
-
     df = pandas.concat([df, ticket_events_from_team_rosters])
 
-    print("Adding name match for ticket events...")
     df = pandas.merge(
         df,
         events_df,
@@ -56,9 +54,12 @@ def create_ticket_events(
     )
     df = df.rename(columns={col_x: ResultsColumn.EVENT_NAME})
     df = df.drop(columns=[col_y, RATIO_COL])
-    df = df.groupby(ResultsColumn.EVENT_ID)
-    print("Finished adding name matches for ticket events.")
-
-    create_json_file(df, "events", is_groupby=True)
+    df = df.drop(
+        columns=[
+            TicketEventsColumn.EVENT_NAT_FULL,
+            TicketEventsColumn.EVENT_NAME,
+            TicketEventsColumn.DATE,
+        ]
+    )
     print(f"Finished creating ticket events data in {(time() - start_time)} seconds.")
     return df

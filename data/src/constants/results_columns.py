@@ -41,6 +41,8 @@ class ResultsColumn:
     EVENT_NAT2 = "eventNat2"
     EVENT_NAT3 = "eventNat3"
     EVENT_NAT_FULL = "eventNatFull"
+    SEASON = "season"
+    AWARD_WON = "awardWon"
 
 
 RESULTS_COLUMNS_TO_RENAME = {

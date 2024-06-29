@@ -20,7 +20,6 @@ from src.data.util.convert_nat3 import convert_nat3
 from src.data.util.convert_person_name import convert_person_name
 from src.data.util.convert_yards import convert_yards
 from src.data.util.drop_unnamed_columns import drop_unnamed_columns
-from src.util.create_json_file import create_json_file
 
 
 def create_results():
@@ -59,6 +58,5 @@ def create_results():
         ascending=[False, False, True, True],
     )
 
-    create_json_file(df, "results")
     print(f"Finished creating site results data in {(time() - start_time)} seconds.")
     return df

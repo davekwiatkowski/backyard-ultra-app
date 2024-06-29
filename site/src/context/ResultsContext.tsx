@@ -14,11 +14,14 @@ interface IResultsContext<K extends keyof any> {
   clearSearchText: () => void;
   // filtering
   searchFilters: Partial<{ [key in K]: string[] }>;
-  addSearchFilter: (key: K, value: string) => void;
+  addSearchFilter: (key: K, value: string | null) => void;
   removeSearchFilter: (key: K) => void;
   removeSearchFilters: (keys: K[]) => void;
   clearSearchFilters: () => void;
-  replaceSearchFilters: (addKey: K, addValue: string, removeKeys: K[]) => void;
+  replaceSearchFilters: (
+    additions: Partial<{ [key in keyof IResultItem]: string | null }>,
+    removeKeys: K[],
+  ) => void;
   // pagination
   page: number;
   setPage: (page: number) => void;
@@ -66,17 +69,27 @@ export const ResultsContextProvider: FC<{ children: React.JSX.Element | React.JS
   >({}, StorageKeyConstants.SORTS);
 
   const replaceSearchFilters = useCallback(
-    (addKey: keyof IResultItem, addValue: string, removeKeys: (keyof IResultItem)[]) => {
+    (
+      additions: Partial<{ [key in keyof IResultItem]: string | null }>,
+      removeKeys: (keyof IResultItem)[],
+    ) => {
       const newSearchFilters = cloneDeep(searchFilters);
       for (let removeKey of removeKeys) {
         delete newSearchFilters[removeKey];
       }
-      const values = newSearchFilters[addKey] ?? [];
-      if (values.includes(addValue)) {
-        return;
+
+      for (let keyStr in additions) {
+        const addKey = keyStr as keyof IResultItem;
+        const addValue = additions[addKey];
+        if (addValue) {
+          const values = newSearchFilters[addKey] ?? [];
+          if (!values.includes(addValue)) {
+            const newValues = [...values, addValue];
+            newSearchFilters[addKey] = newValues;
+          }
+        }
       }
-      const newValues = [...values, addValue];
-      newSearchFilters[addKey] = newValues;
+
       setSearchFilters(newSearchFilters);
       setPage(0);
     },
@@ -84,7 +97,11 @@ export const ResultsContextProvider: FC<{ children: React.JSX.Element | React.JS
   );
 
   const addSearchFilter = useCallback(
-    (key: keyof IResultItem, value: string) => {
+    (key: keyof IResultItem, value: string | null) => {
+      if (!value) {
+        return;
+      }
+
       const newSearchFilters = cloneDeep(searchFilters);
       const values = newSearchFilters[key] ?? [];
       if (values.includes(value)) {
