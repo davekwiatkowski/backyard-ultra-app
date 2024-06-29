@@ -280,7 +280,7 @@ export const ResultTable: FC<{
                           : item.eventPlace === 'A'
                             ? 'Assist'
                             : null) ?? `DNF (${item.eventRank})`}
-                        {item.eventPlace === 'W' && (
+                        {item.eventPlace === 'W' && item.nat2 === item.eventNat2 && (
                           <div
                             className="tooltip ml-2 text-xs"
                             data-tip={`${events[item.eventId]?.[0].ticketType} ticket${events[item.eventId]?.[0].raceQualifiedFor ? ` towards ${events[item.eventId]?.[0].raceQualifiedFor}` : ''}`}
