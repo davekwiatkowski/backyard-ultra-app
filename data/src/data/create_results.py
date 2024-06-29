@@ -23,7 +23,7 @@ from src.data.util.drop_unnamed_columns import drop_unnamed_columns
 from src.util.create_json_file import create_json_file
 
 
-def create_site_results_data():
+def create_results():
     print("Creating site results data...")
     start_time = time()
 

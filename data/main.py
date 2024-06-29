@@ -1,12 +1,17 @@
 import argparse
 
-from src.data.create_event_tickets_data import create_event_tickets_data
-from src.data.create_events_data import create_events_data
+from src.constants.project_constants import TEAM_ROSTER_URL_2024, TICKET_EVENTS_URL
+from src.data.create_events_from_results import create_events_from_results
+from src.data.create_results import create_results
 from src.data.create_site_metadata import create_site_metadata
-from src.data.create_site_results_data import create_site_results_data
+from src.data.create_ticket_events import create_ticket_events
+from src.data.create_ticket_events_from_team_rosters import (
+    create_ticket_events_from_team_rosters,
+)
 from src.scraping.scrape_event_list import scrape_event_list
-from src.scraping.scrape_event_tickets import scrape_event_tickets
 from src.scraping.scrape_results_for_events import scrape_results_for_events
+from src.scraping.scrape_team_rosters import scrape_team_rosters
+from src.scraping.scrape_ticket_events import scrape_ticket_events
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
@@ -18,11 +23,14 @@ if __name__ == "__main__":
     config = vars(args)
     print(f"config: {config}")
     if config["scrape"]:
-        scrape_event_tickets()
-        scrape_event_list()
-        scrape_results_for_events()
+        scrape_ticket_events(2024, TICKET_EVENTS_URL)
+        scrape_team_rosters(2024, TEAM_ROSTER_URL_2024)
+        # scrape_event_list()
+        # scrape_results_for_events()
 
-    results_df = create_site_results_data()
-    events_df = create_events_data(results_df)
-    create_event_tickets_data(events_df)
+    results_df = create_results()
+    events_df = create_events_from_results(results_df)
+    ticket_events_from_team_rosters = create_ticket_events_from_team_rosters()
+    create_ticket_events(events_df, ticket_events_from_team_rosters)
+
     create_site_metadata()

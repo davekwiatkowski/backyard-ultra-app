@@ -2,29 +2,19 @@ import csv
 import os
 import time
 import warnings
-from pathlib import Path
 
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
-from src.constants.project_constants import EVENT_TICKETS_URL, WAIT_TIME
+from src.constants.project_constants import WAIT_TIME
 from src.scraping.util.create_webdriver import create_webdriver
-from src.scraping.util.get_event_tickets_file_path import get_event_tickets_file_path
 
 
-def scrape_event_tickets(season=2024):
-    event_tickets_file_path = get_event_tickets_file_path(season)
-    if Path(event_tickets_file_path).is_file():
-        print(
-            f"Skipping event tickets creation. Already have the silver ticket races for {season}..."
-        )
-        return
-
-    print("Scraping event tickets...")
+def scrape_backyard_ultra_com_table(url: str, file_path: str):
     start_time = time.time()
     driver = create_webdriver()
-    driver.get(EVENT_TICKETS_URL)
+    driver.get(url)
     page = 1
     while True:
         print(f"Scraping page {page}...")
@@ -35,14 +25,12 @@ def scrape_event_tickets(season=2024):
             )
         except TimeoutException as e:
             warnings.warn(
-                f"[scrape_event_tickets] Failed to get table after {WAIT_TIME} seconds. The site is probably down."
+                f"[scrape_backyard_ultra_com_table] Failed to get table after {WAIT_TIME} seconds. The site is probably down."
             )
             raise e
 
-        os.makedirs(os.path.dirname(event_tickets_file_path), exist_ok=True)
-        with open(
-            event_tickets_file_path, "w" if page == 1 else "a", newline=""
-        ) as csv_file:
+        os.makedirs(os.path.dirname(file_path), exist_ok=True)
+        with open(file_path, "w" if page == 1 else "a", newline="") as csv_file:
             writer = csv.writer(csv_file)
             if page == 1:
                 header_tr = table.find_element(
@@ -70,9 +58,7 @@ def scrape_event_tickets(season=2024):
                 page += 1
                 time.sleep(0.5)
         except:
-            print(
-                f"Finished scraping event tickets in {(time.time() - start_time)} seconds."
-            )
+            print(f"Finished scraping table in {(time.time() - start_time)} seconds.")
             break
 
     driver.close()

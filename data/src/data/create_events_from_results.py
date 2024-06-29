@@ -2,7 +2,7 @@ from pandas import DataFrame
 from src.constants.results_columns import ResultsColumn
 
 
-def create_events_data(results_df: DataFrame):
+def create_events_from_results(results_df: DataFrame):
     df = results_df[
         [
             ResultsColumn.EVENT_ID,

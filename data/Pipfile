@@ -9,6 +9,7 @@ pandas = "*"
 numpy = "*"
 country-converter = "*"
 fuzzywuzzy = "*"
+python-levenshtein = "*"
 
 [dev-packages]
 

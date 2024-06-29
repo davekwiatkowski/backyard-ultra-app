@@ -2,7 +2,7 @@ import re
 from datetime import datetime
 
 
-def convert_event_tickets_date(date: str):
+def convert_ticket_events_date(date: str):
     if date == "TBC":
         return None
 
