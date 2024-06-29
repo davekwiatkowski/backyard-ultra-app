@@ -21,4 +21,4 @@ def add_ranks(df: DataFrame):
     df[ResultsColumn.IS_TIED_WIN] = df[df[ResultsColumn.EVENT_PLACE] == "W"].duplicated(
         subset=[ResultsColumn.EVENT_ID, ResultsColumn.EVENT_PLACE], keep=False
     )
-    df.loc[df[ResultsColumn.IS_TIED_WIN] == True, ResultsColumn.EVENT_PLACE] = None
+    df.loc[df[ResultsColumn.IS_TIED_WIN] == True, ResultsColumn.EVENT_PLACE] = "A"
