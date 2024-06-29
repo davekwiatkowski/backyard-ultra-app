@@ -25,8 +25,8 @@ if __name__ == "__main__":
     if config["scrape"]:
         scrape_ticket_events(2024, TICKET_EVENTS_URL)
         scrape_team_rosters(2024, TEAM_ROSTER_URL_2024)
-        # scrape_event_list()
-        # scrape_results_for_events()
+        scrape_event_list()
+        scrape_results_for_events()
 
     results_df = create_results()
     events_df = create_events_from_results(results_df)
