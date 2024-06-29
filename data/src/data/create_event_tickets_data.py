@@ -1,34 +1,22 @@
 import glob
 import os
-import re
-from datetime import datetime
 from time import time
 
 import pandas
+from fuzzywuzzy import fuzz
+from pandas import DataFrame
 from src.constants.event_tickets_columns import (
     EVENT_TICKETS_COLUMNS_TO_RENAME,
     EventTicketsColumn,
 )
 from src.constants.project_constants import BUILD_FOLDER
+from src.constants.results_columns import ResultsColumn
+from src.data.util.convert_event_tickets_date import convert_event_tickets_date
 from src.data.util.drop_unnamed_columns import drop_unnamed_columns
 from src.util.create_json_file import create_json_file
 
 
-def convert_event_tickets_date(date: str):
-    if date == "TBC":
-        return None
-
-    regex = r"^([a-zA-Z]+), ([a-zA-Z]+) ([0-9]+), ([0-9]+)$"
-    day_of_week = re.sub(regex, "\\1", date)
-    month = re.sub(regex, "\\2", date)
-    day_of_month = re.sub(regex, "\\3", date).zfill(2)
-    year = re.sub(regex, "\\4 ", date)
-    date = f"{day_of_week}, {month} {day_of_month}, {year}".strip()
-    print(date)
-    return datetime.strptime(date, "%A, %B %d, %Y").strftime("%Y/%m/%d")
-
-
-def create_event_tickets_data():
+def create_event_tickets_data(events_df: DataFrame):
     print("Creating event tickets data...")
     start_time = time()
 
@@ -39,11 +27,34 @@ def create_event_tickets_data():
     df = drop_unnamed_columns(df)
     df = df.rename(columns=EVENT_TICKETS_COLUMNS_TO_RENAME)
     df = df.drop_duplicates()
-
     df[EventTicketsColumn.DATE] = df[EventTicketsColumn.DATE].apply(
         convert_event_tickets_date
     )
 
-    create_json_file(df, "event_tickets")
+    print("Adding name match for ticket events...")
+    df = pandas.merge(
+        df,
+        events_df,
+        how="left",
+        on=[ResultsColumn.DATE, ResultsColumn.EVENT_NAT_FULL],
+    )
+    col_x = f"{ResultsColumn.EVENT_NAME}_x"
+    col_y = f"{ResultsColumn.EVENT_NAME}_y"
+    RATIO_COL = "ratio"
+    df[RATIO_COL] = df[~df[col_y].isna()].apply(
+        lambda x: fuzz.ratio(x[col_x], x[col_y]),
+        axis=1,
+    )
+    df = (
+        df.sort_values(RATIO_COL, ascending=False)
+        .drop_duplicates([col_x])
+        .drop_duplicates(col_y)
+    )
+    df = df.rename(columns={col_x: ResultsColumn.EVENT_NAME})
+    df = df.drop(columns=[col_y, RATIO_COL])
+    df = df.groupby(ResultsColumn.EVENT_ID)
+    print("Finished adding name matches for ticket events.")
+
+    create_json_file(df, "events", is_groupby=True)
     print(f"Finished creating event tickets data in {(time() - start_time)} seconds.")
     return df

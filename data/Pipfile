@@ -8,6 +8,7 @@ selenium = "*"
 pandas = "*"
 numpy = "*"
 country-converter = "*"
+fuzzywuzzy = "*"
 
 [dev-packages]
 

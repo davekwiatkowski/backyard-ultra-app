@@ -38,6 +38,7 @@ class ResultsColumn:
     IS_TIED_WIN = "isTiedWin"
     IS_PERSONAL_BEST = "isPersonalBest"
     SEASON_BESTS = "seasonBests"
+    EVENT_NAT2 = "eventNat2"
     EVENT_NAT3 = "eventNat3"
     EVENT_NAT_FULL = "eventNatFull"
 

@@ -7,6 +7,7 @@ import { PageWrapper } from './PageWrapper';
 import { SearchBar } from './SearchBar';
 import { Statistics } from './Statistics';
 import { IMetadata } from '../types/IMetadata';
+import { IEvent } from '../types/IEvent';
 
 type TabType = 'results' | 'countries' | 'people' | 'races';
 
@@ -18,6 +19,7 @@ export const Client: FC<{
   countriesCount: number;
   racesCount: number;
   seasons: number[];
+  events: { [eventId: string]: IEvent[] | undefined };
 }> = ({
   data,
   metadata,
@@ -26,6 +28,7 @@ export const Client: FC<{
   countriesCount,
   racesCount,
   seasons,
+  events,
 }) => {
   const [currentTab, setCurrentTab] = useState<TabType>('results');
 
@@ -59,7 +62,7 @@ export const Client: FC<{
           role="tabpanel"
           className="tab-content bg-base-100 border-base-300 rounded-box p-6 overflow-x-hidden"
         >
-          <ResultTable data={data} seasons={seasons} />
+          <ResultTable data={data} seasons={seasons} events={events} />
         </div>
       </div>
     </PageWrapper>

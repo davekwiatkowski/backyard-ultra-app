@@ -26,6 +26,7 @@ from src.util.create_json_file import create_json_file
 def create_site_results_data():
     print("Creating site results data...")
     start_time = time()
+
     joined_files = os.path.join(f"{BUILD_FOLDER}/events", "*.csv")
     joined_list = glob.glob(joined_files)
     df = pandas.concat(map(pandas.read_csv, joined_list), ignore_index=True)

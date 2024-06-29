@@ -16,11 +16,13 @@ import { getFlagEmoji } from '../util/getFlagEmoji';
 import { ResultsContext } from '../context/ResultsContext';
 import { TableSortButton } from './SortButton';
 import { SortDirection } from '../types/SortDirection';
+import { IEvent } from '../types/IEvent';
 
 export const ResultTable: FC<{
   data: IResultItem[];
   seasons: number[];
-}> = ({ data, seasons }) => {
+  events: { [eventId: string]: IEvent[] | undefined };
+}> = ({ data, seasons, events }) => {
   const {
     searchFilters,
     searchText,
@@ -261,7 +263,7 @@ export const ResultTable: FC<{
                                   ]);
                                 }}
                               >
-                                {item.isPersonalBest && '🏅'}
+                                {item.isPersonalBest && '🌟'}
                               </button>
                             )}
                           </span>
@@ -278,6 +280,15 @@ export const ResultTable: FC<{
                           : item.eventPlace === 'A'
                             ? 'Assist'
                             : null) ?? `DNF (${item.eventRank})`}
+                        {item.eventPlace === 'W' && (
+                          <div
+                            className="tooltip ml-2 text-xs"
+                            data-tip={`${events[item.eventId]?.[0].ticketType} ticket${events[item.eventId]?.[0].raceQualifiedFor ? ` towards ${events[item.eventId]?.[0].raceQualifiedFor}` : ''}`}
+                          >
+                            {events[item.eventId]?.[0].ticketType === 'Silver' && '🥈'}
+                            {events[item.eventId]?.[0].ticketType === 'Bronze' && '🥉'}
+                          </div>
+                        )}
                       </td>
                       <td className="whitespace-nowrap">
                         <button
@@ -294,7 +305,7 @@ export const ResultTable: FC<{
                           {item.name}
                         </button>
                       </td>
-                      <td className="whitespace-nowrap">
+                      <td className="whitespace-nowrap flex items-center">
                         <button
                           onClick={() => addSearchFilter('eventNat2', item.eventNat2)}
                           className="tooltip btn btn-xs btn-ghost btn-circle mr-1"
@@ -308,6 +319,13 @@ export const ResultTable: FC<{
                         >
                           {item.race}
                         </button>
+                        <div
+                          className="tooltip ml-2 text-xs"
+                          data-tip={`${events[item.eventId]?.[0].ticketType} ticket${events[item.eventId]?.[0].raceQualifiedFor ? ` towards ${events[item.eventId]?.[0].raceQualifiedFor}` : ''}`}
+                        >
+                          {events[item.eventId]?.[0].ticketType === 'Silver' && '🥈'}
+                          {events[item.eventId]?.[0].ticketType === 'Bronze' && '🥉'}
+                        </div>
                       </td>
                       <td className="whitespace-nowrap">
                         <button
