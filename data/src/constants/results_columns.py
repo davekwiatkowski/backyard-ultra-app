@@ -41,7 +41,7 @@ class ResultsColumn:
     EVENT_NAT2 = "eventNat2"
     EVENT_NAT3 = "eventNat3"
     EVENT_NAT_FULL = "eventNatFull"
-    SEASON = "season"
+    SEASONS = "seasons"
     AWARD_WON = "awardWon"
 
 

@@ -13,7 +13,7 @@ from src.constants.results_columns import (
 )
 from src.data.util.add_personal_best import add_personal_best
 from src.data.util.add_ranks import add_ranks
-from src.data.util.add_season_best import add_season_bests
+from src.data.util.add_season_info import add_season_info
 from src.data.util.convert_backyard_date import convert_backyard_date
 from src.data.util.convert_backyard_race import convert_backyard_race
 from src.data.util.convert_nat3 import convert_nat3
@@ -51,7 +51,7 @@ def create_results():
     add_ranks(df)
 
     df = add_personal_best(df)
-    df = add_season_bests(df)
+    df = add_season_info(df)
 
     df = df.sort_values(
         by=RESULTS_COLUMNS_TO_SORT_BY,

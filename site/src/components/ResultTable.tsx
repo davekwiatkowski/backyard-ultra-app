@@ -41,6 +41,22 @@ export const ResultTable: FC<{
 
   const maxPage = useMemo(() => Math.ceil(currentData.length / MAX_ITEMS_PER_PAGE), [currentData]);
 
+  const isBest = useMemo(() => {
+    const seasonBest = searchFilters.seasonBests?.[0];
+    if (seasonBest) {
+      return true;
+    }
+    return !!searchFilters.isPersonalBest?.[0];
+  }, [searchFilters.isPersonalBest, searchFilters.seasonBests]);
+
+  const bestToggleText = useMemo(() => {
+    const seasonBest = searchFilters.seasonBests?.[0];
+    if (seasonBest) {
+      return 'Season bests';
+    }
+    return searchFilters.isPersonalBest?.[0] ? 'Personal bests' : 'All results';
+  }, [searchFilters.isPersonalBest, searchFilters.seasonBests]);
+
   const handlePrevious = useCallback(() => {
     if (page - 1 < 0) return;
     setPage(page - 1);
@@ -56,29 +72,49 @@ export const ResultTable: FC<{
     clearSearchFilters();
   }, [clearSearchFilters, clearSearchText]);
 
-  const seasonSelectorValue = useMemo<'personal-bests' | 'all' | number>(() => {
-    const seasonBest = searchFilters.seasonBests?.[0];
-    if (seasonBest) {
-      return parseInt(seasonBest);
+  const handleBestChange: ChangeEventHandler<HTMLInputElement> = useCallback(() => {
+    const season = searchFilters.seasons?.[0];
+    if (season) {
+      if (isBest) {
+        removeSearchFilters(['seasonBests']);
+      } else {
+        replaceSearchFilters({ seasonBests: season }, ['seasonBests']);
+      }
+    } else {
+      if (isBest) {
+        removeSearchFilters(['isPersonalBest']);
+      } else {
+        replaceSearchFilters({ isPersonalBest: 'true' }, ['isPersonalBest']);
+      }
     }
-    if (Boolean(searchFilters.isPersonalBest?.[0])) {
-      return 'personal-bests';
-    }
-    return 'all';
-  }, [searchFilters]);
+  }, [isBest, removeSearchFilters, replaceSearchFilters, searchFilters.seasons]);
 
   const onSeasonSelectorChange: ChangeEventHandler<HTMLSelectElement> = useCallback(
     (e) => {
       const selected = e.currentTarget.value;
-      if (selected === 'personal-bests') {
-        replaceSearchFilters({ isPersonalBest: 'true' }, ['seasonBests']);
-      } else if (seasons.includes(parseInt(selected))) {
-        replaceSearchFilters({ seasonBests: selected }, ['seasonBests', 'isPersonalBest']);
+      if (seasons.includes(parseInt(selected))) {
+        if (isBest) {
+          replaceSearchFilters({ seasons: selected, seasonBests: selected }, [
+            'seasons',
+            'isPersonalBest',
+            'seasonBests',
+          ]);
+        } else {
+          replaceSearchFilters({ seasons: selected }, ['seasons']);
+        }
       } else {
-        removeSearchFilters(['isPersonalBest', 'seasonBests']);
+        if (isBest) {
+          replaceSearchFilters({ isPersonalBest: 'true' }, [
+            'seasons',
+            'isPersonalBest',
+            'seasonBests',
+          ]);
+        } else {
+          removeSearchFilters(['seasons']);
+        }
       }
     },
-    [removeSearchFilters, replaceSearchFilters, seasons],
+    [isBest, removeSearchFilters, replaceSearchFilters, seasons],
   );
 
   useEffect(() => {
@@ -120,22 +156,32 @@ export const ResultTable: FC<{
   return (
     <div>
       <div>
-        <div className="pb-4 flex gap-4 items-center">
+        <div className="pb-4 flex gap-4 flex-wrap items-center">
           <select
-            value={seasonSelectorValue}
+            value={searchFilters.seasons?.[0] ?? 'all'}
             className="select select-bordered w-fit max-w-xs select-sm"
             onChange={onSeasonSelectorChange}
           >
-            <option value="all">All results</option>
-            <option value="personal-bests">Personal bests</option>
+            <option value="all">All-time</option>
             {seasons
               .sort((a, b) => b - a)
               .map((season) => (
                 <option value={season} key={season}>
-                  {`${season - 2}-${season} bests`}
+                  {`${season - 2}-${season}`}
                 </option>
               ))}
           </select>
+          <div className="form-control">
+            <label className="label cursor-pointer gap-2">
+              <span className="label-text">{bestToggleText}</span>
+              <input
+                type="checkbox"
+                className="toggle toggle-sm"
+                checked={isBest}
+                onChange={handleBestChange}
+              />
+            </label>
+          </div>
           <button
             className="btn btn-xs btn-outline"
             disabled={!Object.keys(sorts).length}
@@ -241,10 +287,10 @@ export const ResultTable: FC<{
                                 <button
                                   key={year}
                                   onClick={() => {
-                                    replaceSearchFilters({ seasonBests: `${year}` }, [
-                                      'isPersonalBest',
-                                      'seasonBests',
-                                    ]);
+                                    replaceSearchFilters(
+                                      { seasonBests: `${year}`, seasons: `${year}` },
+                                      ['isPersonalBest', 'seasonBests', 'seasons'],
+                                    );
                                   }}
                                   className="btn btn-ghost btn-circle btn-xs tooltip text-accent font-bold"
                                   data-tip={`${year - 2}-${year} best`}
@@ -260,6 +306,7 @@ export const ResultTable: FC<{
                                 onClick={() => {
                                   replaceSearchFilters({ isPersonalBest: `${true}` }, [
                                     'seasonBests',
+                                    'seasons',
                                   ]);
                                 }}
                               >

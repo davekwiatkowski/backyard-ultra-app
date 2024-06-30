@@ -10,7 +10,7 @@ export interface IResultItem {
   personId: string;
   // bests
   isPersonalBest: boolean;
-  seasonBests: (number | null)[];
+  seasonBests: number[];
   // nat
   nat2: string;
   nat3: string;
@@ -30,5 +30,5 @@ export interface IResultItem {
   raceQualifiedFor: string;
   // time
   date: string;
-  season: string;
+  seasons: number[];
 }
