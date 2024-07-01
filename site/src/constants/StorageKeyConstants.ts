@@ -8,4 +8,5 @@ export const StorageKeyConstants = {
   SEARCH: createKey('SEARCH'),
   FILTERS: createKey('FILTERS'),
   SORTS: createKey('SORTS'),
+  DISTANCE_TYPE: createKey('DISTANCE_TYPE'),
 } as const;

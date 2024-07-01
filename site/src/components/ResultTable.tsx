@@ -16,6 +16,10 @@ import { getFlagEmoji } from '../util/getFlagEmoji';
 import { ResultsContext } from '../context/ResultsContext';
 import { TableSortButton } from './SortButton';
 import { SortDirection } from '../types/SortDirection';
+import { TeamStatus } from '../types/TeamStatus';
+import { DistanceType, distanceTypes } from '../types/DistanceType';
+import { usePersistState } from '../util/hooks/usePersistState';
+import { StorageKeyConstants } from '../constants/StorageKeyConstants';
 
 export const ResultTable: FC<{
   data: IResultItem[];
@@ -38,6 +42,10 @@ export const ResultTable: FC<{
 
   const [currentData, setCurrentData] = useState(data);
   const [currentPageData, setCurrentPageData] = useState(data.slice(0, MAX_ITEMS_PER_PAGE));
+  const [distanceType, setDistanceType] = usePersistState<DistanceType>(
+    DistanceType.Yards,
+    StorageKeyConstants.DISTANCE_TYPE,
+  );
 
   const maxPage = useMemo(() => Math.ceil(currentData.length / MAX_ITEMS_PER_PAGE), [currentData]);
 
@@ -171,6 +179,17 @@ export const ResultTable: FC<{
                 </option>
               ))}
           </select>
+          <select
+            value={distanceType}
+            className="select select-bordered w-fit max-w-xs select-sm"
+            onChange={(e) => setDistanceType(e.currentTarget.value as DistanceType)}
+          >
+            {distanceTypes.map((type) => (
+              <option value={type} key={type}>
+                {type}
+              </option>
+            ))}
+          </select>
           <div className="form-control">
             <label className="label cursor-pointer gap-2">
               <span className="label-text">{bestToggleText}</span>
@@ -236,7 +255,7 @@ export const ResultTable: FC<{
                   </th>
                   <th>
                     <TableSortButton
-                      title="Yards"
+                      title={distanceType}
                       dir={sorts.yards?.dir}
                       onSort={() => sortBy('yards')}
                     />
@@ -262,6 +281,14 @@ export const ResultTable: FC<{
                       onSort={() => sortBy('race')}
                     />
                   </th>
+                  <th>{'Bests'}</th>
+                  <th>
+                    <TableSortButton
+                      title="Team status"
+                      dir={sorts.teamStatus?.dir}
+                      onSort={() => sortBy('teamStatus')}
+                    />
+                  </th>
                   <th>
                     <TableSortButton
                       title="Date"
@@ -280,45 +307,17 @@ export const ResultTable: FC<{
                       <td className="whitespace-nowrap">
                         <div className="flex flex-row justify-between gap-1 items-center">
                           {item.rankResultAllTime.toLocaleString()}
-                          <span className="flex gap-1">
-                            {item.seasonBests.map((year) => {
-                              if (!year) return;
-                              return (
-                                <button
-                                  key={year}
-                                  onClick={() => {
-                                    replaceSearchFilters(
-                                      { seasonBests: `${year}`, seasons: `${year}` },
-                                      ['isPersonalBest', 'seasonBests', 'seasons'],
-                                    );
-                                  }}
-                                  className="btn btn-ghost btn-circle btn-xs tooltip text-accent font-bold"
-                                  data-tip={`${year - 2}-${year} best`}
-                                >
-                                  {`${year}`.substring(2)}
-                                </button>
-                              );
-                            })}
-                            {item.isPersonalBest && (
-                              <button
-                                className="btn btn-ghost btn-circle btn-xs tooltip"
-                                data-tip="Personal best"
-                                onClick={() => {
-                                  replaceSearchFilters({ isPersonalBest: `${true}` }, [
-                                    'seasonBests',
-                                    'seasons',
-                                  ]);
-                                }}
-                              >
-                                {item.isPersonalBest && '🌟'}
-                              </button>
-                            )}
-                          </span>
                         </div>
                       </td>
                       <td className="whitespace-nowrap">
                         <div className="flex flex-row justify-between gap-1 items-center">
-                          <span>{item.yards}</span>
+                          {distanceType === DistanceType.Yards && <span>{item.yards}</span>}
+                          {distanceType === DistanceType.Kilometers && (
+                            <span>{(item.yards * 6.70558).toFixed(2)}</span>
+                          )}
+                          {distanceType === DistanceType.Miles && (
+                            <span>{(item.yards * 4.16666).toFixed(2)}</span>
+                          )}
                         </div>
                       </td>
                       <td className="whitespace-nowrap">
@@ -346,12 +345,12 @@ export const ResultTable: FC<{
                         <button
                           onClick={() => addSearchFilter('nat2', item.nat2)}
                           className="tooltip btn btn-xs btn-ghost btn-circle mr-1"
-                          data-tip={item.natFull}
+                          data-tip={'from ' + item.natFull}
                         >
                           {getFlagEmoji(item.nat2)}
                         </button>
                         <button
-                          className={`link ${item.gender === 'F' && 'text-primary'}`}
+                          className={`link ${item.gender === 'F' && 'text-secondary'}`}
                           onClick={() => addSearchFilter('personId', item.personId)}
                         >
                           {item.name}
@@ -383,6 +382,76 @@ export const ResultTable: FC<{
                             {item.eventAward === 'Gold' && '🥇'}
                             {item.eventAward === 'Silver' && '🥈'}
                             {item.eventAward === 'Bronze' && '🥉'}
+                          </button>
+                        )}
+                      </td>
+                      <td className="whitespace-nowrap">
+                        <span className="flex gap-1">
+                          {item.seasonBests.map((year) => {
+                            if (!year) return;
+                            return (
+                              <button
+                                key={year}
+                                onClick={() => {
+                                  replaceSearchFilters(
+                                    { seasonBests: `${year}`, seasons: `${year}` },
+                                    ['isPersonalBest', 'seasonBests', 'seasons'],
+                                  );
+                                }}
+                                className="btn btn-ghost btn-circle btn-xs tooltip text-accent font-bold"
+                                data-tip={`${year - 2}-${year} best`}
+                              >
+                                {`${year}`.substring(2)}
+                              </button>
+                            );
+                          })}
+                          {item.isPersonalBest && (
+                            <button
+                              className="btn btn-ghost btn-circle btn-xs tooltip"
+                              data-tip="Personal best"
+                              onClick={() => {
+                                replaceSearchFilters({ isPersonalBest: `${true}` }, [
+                                  'seasonBests',
+                                  'seasons',
+                                ]);
+                              }}
+                            >
+                              {item.isPersonalBest && '🌟'}
+                            </button>
+                          )}
+                        </span>
+                      </td>
+                      <td>
+                        {!!item.teamStatus && (
+                          <button
+                            className="link tooltip"
+                            data-tip={'Team eligibility: ' + item.teamStatus}
+                            onClick={() => addSearchFilter('teamStatus', item.teamStatus)}
+                          >
+                            {item.teamStatus}
+                          </button>
+                        )}
+                        {(item.teamStatus === 'At-large' ||
+                          item.teamStatus === 'Silver ticket') && (
+                          <button
+                            className="tooltip btn btn-xs btn-ghost btn-circle ml-1"
+                            data-tip={`On team ${item.nat3}`}
+                            onClick={() => {
+                              replaceSearchFilters(
+                                {
+                                  teamStatus: [
+                                    'At-large',
+                                    'Silver ticket',
+                                    'Alternate',
+                                  ] as TeamStatus[],
+                                  nat2: item.nat2,
+                                },
+                                ['teamStatus', 'nat2'],
+                              );
+                              sortBy('teamStatus', 'desc');
+                            }}
+                          >
+                            {getFlagEmoji(item.nat2)}
                           </button>
                         )}
                       </td>

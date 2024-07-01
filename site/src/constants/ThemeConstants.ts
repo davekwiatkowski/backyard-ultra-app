@@ -37,7 +37,7 @@ enum DaisyUITheme {
 }
 
 export enum Theme {
-  LIGHT = DaisyUITheme.autumn,
+  LIGHT = DaisyUITheme.garden,
   DARK = DaisyUITheme.dim,
 }
 export type ThemeType = `${Theme}`;

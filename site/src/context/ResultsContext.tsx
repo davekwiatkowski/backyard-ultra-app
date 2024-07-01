@@ -14,12 +14,12 @@ interface IResultsContext<K extends keyof any> {
   clearSearchText: () => void;
   // filtering
   searchFilters: Partial<{ [key in K]: string[] }>;
-  addSearchFilter: (key: K, value: string | null) => void;
+  addSearchFilter: (key: K, value: string | string[] | null) => void;
   removeSearchFilter: (key: K) => void;
   removeSearchFilters: (keys: K[]) => void;
   clearSearchFilters: () => void;
   replaceSearchFilters: (
-    additions: Partial<{ [key in keyof IResultItem]: string | null }>,
+    additions: Partial<{ [key in keyof IResultItem]: string | string[] | null }>,
     removeKeys: K[],
   ) => void;
   // pagination
@@ -27,7 +27,7 @@ interface IResultsContext<K extends keyof any> {
   setPage: (page: number) => void;
   // sorting
   sorts: Partial<{ [key in K]: { dir: SortDirection; priority: number } }>;
-  sortBy: (key: K) => void;
+  sortBy: (key: K, dir?: SortDirection) => void;
   clearSorting: () => void;
 }
 
@@ -70,7 +70,7 @@ export const ResultsContextProvider: FC<{ children: React.JSX.Element | React.JS
 
   const replaceSearchFilters = useCallback(
     (
-      additions: Partial<{ [key in keyof IResultItem]: string | null }>,
+      additions: Partial<{ [key in keyof IResultItem]: string | string[] | null }>,
       removeKeys: (keyof IResultItem)[],
     ) => {
       const newSearchFilters = cloneDeep(searchFilters);
@@ -81,15 +81,30 @@ export const ResultsContextProvider: FC<{ children: React.JSX.Element | React.JS
       for (let keyStr in additions) {
         const addKey = keyStr as keyof IResultItem;
         const addValue = additions[addKey];
-        if (addValue) {
-          const values = newSearchFilters[addKey] ?? [];
-          if (!values.includes(addValue)) {
-            const newValues = [...values, addValue];
-            newSearchFilters[addKey] = newValues;
-          }
-        }
-      }
 
+        if (!addValue) continue;
+
+        const values = newSearchFilters[addKey] ?? [];
+        const newValues = [...values];
+        if (Array.isArray(addValue)) {
+          for (let v of addValue) {
+            if (values.includes(v)) {
+              continue;
+            }
+            newValues.push(v);
+          }
+        } else {
+          if (values.includes(addValue)) {
+            return;
+          }
+          newValues.push(addValue);
+        }
+
+        if (newValues.length === values.length) {
+          return;
+        }
+        newSearchFilters[addKey] = newValues;
+      }
       setSearchFilters(newSearchFilters);
       setPage(0);
     },
@@ -97,17 +112,31 @@ export const ResultsContextProvider: FC<{ children: React.JSX.Element | React.JS
   );
 
   const addSearchFilter = useCallback(
-    (key: keyof IResultItem, value: string | null) => {
+    (key: keyof IResultItem, value: string | string[] | null) => {
       if (!value) {
         return;
       }
 
       const newSearchFilters = cloneDeep(searchFilters);
       const values = newSearchFilters[key] ?? [];
-      if (values.includes(value)) {
+
+      const newValues = [...values];
+      if (Array.isArray(value)) {
+        for (let v of value) {
+          if (values.includes(v)) {
+            continue;
+          }
+          newValues.push(v);
+        }
+      } else {
+        if (values.includes(value)) {
+          return;
+        }
+        newValues.push(value);
+      }
+      if (newValues.length === values.length) {
         return;
       }
-      const newValues = [...values, value];
       newSearchFilters[key] = newValues;
       setSearchFilters(newSearchFilters);
       setPage(0);
@@ -143,13 +172,15 @@ export const ResultsContextProvider: FC<{ children: React.JSX.Element | React.JS
   }, [setPage, setSearchFilters]);
 
   const handleSort = useCallback(
-    (key: keyof IResultItem) => {
+    (key: keyof IResultItem, dir: SortDirection) => {
       const newSorts = { ...sorts };
       Object.keys(newSorts).forEach((key) => {
         ++(newSorts[key as keyof IResultItem] as any).priority;
       });
       newSorts[key] = {
-        dir: sorts[key]?.dir === undefined ? 'asc' : sorts[key]?.dir === 'asc' ? 'desc' : undefined,
+        dir:
+          dir ??
+          (sorts[key]?.dir === undefined ? 'asc' : sorts[key]?.dir === 'asc' ? 'desc' : undefined),
         priority: 0,
       };
       if (newSorts[key]?.dir === undefined) {

@@ -43,6 +43,7 @@ class ResultsColumn:
     EVENT_NAT_FULL = "eventNatFull"
     SEASONS = "seasons"
     AWARD_WON = "awardWon"
+    TEAM_STATUS = "teamStatus"
 
 
 RESULTS_COLUMNS_TO_RENAME = {

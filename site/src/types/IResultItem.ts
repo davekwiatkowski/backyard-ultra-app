@@ -1,3 +1,5 @@
+import { TeamStatus } from './TeamStatus';
+
 export interface IResultItem {
   yards: number;
   rankResultAllTime: number;
@@ -10,7 +12,6 @@ export interface IResultItem {
   personId: string;
   // bests
   isPersonalBest: boolean;
-  seasonBests: number[];
   // nat
   nat2: string;
   nat3: string;
@@ -20,6 +21,7 @@ export interface IResultItem {
   eventId: string;
   eventPlace: string;
   eventRank: string;
+  date: string;
   // event nat
   eventNat2: string;
   eventNat3: string;
@@ -28,7 +30,9 @@ export interface IResultItem {
   eventAward: 'Bronze' | 'Silver' | 'Gold' | 'Championship' | null;
   awardWon: 'Bronze' | 'Silver' | 'Gold' | 'Championship' | null;
   raceQualifiedFor: string;
-  // time
-  date: string;
+  // seasons
   seasons: number[];
+  seasonBests: number[];
+  // qualification
+  teamStatus: TeamStatus | null;
 }

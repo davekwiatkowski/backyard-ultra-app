@@ -7,8 +7,7 @@ import { PageWrapper } from './PageWrapper';
 import { SearchBar } from './SearchBar';
 import { Statistics } from './Statistics';
 import { IMetadata } from '../types/IMetadata';
-
-type TabType = 'results' | 'countries' | 'people' | 'races';
+import { TabType } from '../types/TabType';
 
 export const Client: FC<{
   data: IResultItem[];

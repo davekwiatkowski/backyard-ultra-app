@@ -1,6 +1,7 @@
 import argparse
 
 from src.constants.project_constants import TEAM_ROSTER_URL_2024, TICKET_EVENTS_URL
+from src.constants.results_columns import RESULTS_COLUMNS_TO_SORT_BY, ResultsColumn
 from src.data.create_events_from_results import create_events_from_results
 from src.data.create_results import create_results
 from src.data.create_site_metadata import create_site_metadata
@@ -9,6 +10,7 @@ from src.data.create_ticket_events_from_team_rosters import (
     create_ticket_events_from_team_rosters,
 )
 from src.data.util.add_awards_to_results import add_awards_to_results
+from src.data.util.add_team_status import add_team_status
 from src.scraping.scrape_event_list import scrape_event_list
 from src.scraping.scrape_results_for_events import scrape_results_for_events
 from src.scraping.scrape_team_rosters import scrape_team_rosters
@@ -39,7 +41,8 @@ if __name__ == "__main__":
     )
     results_df = add_awards_to_results(results_df, ticket_events_df)
 
+    results_df = add_team_status(results_df, 2024)
+
     create_json_file(results_df, "results")
-    # TODO: Add season team to results
 
     create_site_metadata()

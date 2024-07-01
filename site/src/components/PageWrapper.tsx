@@ -30,6 +30,10 @@ export const PageWrapper: FC<{
         <main>{children}</main>
         <footer className="footer p-4 bg-base-100 footer-center text-base-content">
           <aside>
+            <p className="italic text-xs">
+              Disclaimer: This is a passion project, and not all of the data is guaranteed to be
+              correct.
+            </p>
             <p className="font-mono text-xs">Version {metadata.version}</p>
             <p className="text-xs">
               © 2024{' - '}
